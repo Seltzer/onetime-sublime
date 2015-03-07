@@ -1,11 +1,11 @@
 (function($) {
     function enableWeekGridClicking(calendar, $weekGrid, weekGrid) {
-	$weekGrid.delegate('table:eq(1) > tbody > tr > td:nth-child(1), td:nth-child(2) > label', 'click', function() {
-	    var $tr = $(this).closest('tr'),
+	$weekGrid.delegate('table:eq(1) > tbody > tr', 'click', function() {
+	    var $tr = $(this),//.closest('tr'),
 		dayIndex = $tr.index(),
 		boundDateTime = weekGrid.data[dayIndex].weekDateTime;
 
-	    cal.value(boundDateTime);
+	    calendar.value(boundDateTime);
 	});
     }
 

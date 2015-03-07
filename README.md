@@ -10,6 +10,8 @@ TODO:
   - Decide on appearance
 - Favourites filtering:
   - Should reset when changing tabs
+  - Should be hidden when it doesn't apply to current tab
+  - Should be disabled for Search / BAU tabs
 
 
 UPCOMING FEATURES:

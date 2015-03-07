@@ -1,5 +1,5 @@
-#weekgrid table > tbody > tr > td:first-child > label,
-#weekgrid table > tbody > tr > td:first-child + td > label {
+#weekgrid table > tbody > tr,
+#weekgrid table > tbody > tr * {
     cursor: pointer;
 }
 
