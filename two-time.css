@@ -1,3 +1,4 @@
-html body * {
-    color: pink !important;
+#weekgrid table > tbody > tr > td:first-child > label,
+#weekgrid table > tbody > tr > td:first-child + td > label {
+    cursor: pointer;
 }
