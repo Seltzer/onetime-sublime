@@ -2,3 +2,8 @@
 #weekgrid table > tbody > tr > td:first-child + td > label {
     cursor: pointer;
 }
+
+#cal table > tbody > tr > td.today {
+    border: 1px solid red;
+    font-weight: bold;
+}
