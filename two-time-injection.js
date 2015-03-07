@@ -41,17 +41,41 @@
 	$('#DatePicker').change(doIt);
 	doIt();
     }
+
+
+    function enableFavouritesFiltering($favTab) {
+	var $li = $('<li class="favourites-filter"></li>')
+	    .appendTo($favTab.find('ul.t-tabstrip-items'));
+
+	$('<input type="search" placeholder="Type here to filter" />')
+	    .appendTo($li)
+	    // Using 'keyup' as 'keypress' ignores backspace. 'search' is fired when the user presses <ret> or clicks the X.
+	    .bind('keyup change blur mousedown search', function(event) {
+		var text = $(this).val().trim(),
+		    $rows = $favTab.find('.t-grid-content table tbody tr');
+		
+		$rows.show();
+
+		if (text)
+		    $rows.filter(function() { return !contains($(this).text(), text); }).hide();
+	    });
+
+	function contains(text, substring) {
+	    return text.toLowerCase().indexOf(substring.toLowerCase()) !== -1;
+	};
+    }
 	
 
     $(function() {
 	var $cal = $('#cal'),
 	    cal = $cal.data('tCalendar'),
 	    $weekGrid = $('#weekgrid'),
-	    weekGrid = $weekGrid.data('tGrid');
+	    weekGrid = $weekGrid.data('tGrid'),
+	    $favTab = $('#favTab');
 
 	enableWeekGridClicking(cal, $weekGrid, weekGrid);
-
 	enableTodayHighlighting($cal, cal);
+	enableFavouritesFiltering($favTab);
     });
 }(jQuery));
 

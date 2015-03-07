@@ -7,3 +7,9 @@
     border: 1px solid red;
     font-weight: bold;
 }
+
+#favGrid ul > li.favourites-filter {
+    float: right;
+    display: inline-block;
+    position: relative;
+}

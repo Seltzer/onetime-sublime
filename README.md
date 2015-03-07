@@ -8,6 +8,10 @@ TODO:
 - Highlight today:
   - Needs to update in other situations (e.g. when 'Today' is clicked)
   - Decide on appearance
-- Text search feature
-- Change row height
-- Modalise feature
+- Favourites filtering:
+  - Should reset when changing tabs
+
+
+UPCOMING FEATURES:
+* Modalise
+* Increase row heights in Favourites
