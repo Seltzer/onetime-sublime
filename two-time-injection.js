@@ -1,20 +1,4 @@
 (function($) {
-	function monkeyPatchTelerikComponent($element, telerikDatumKey, handlerName, code) {
-		var datum = $element.data(telerikDatumKey),
-			currentHandler = datum[handlerName];
-
-		var newHandler = code;
-		if (currentHandler) {
-			newHandler = function() {
-				currentHandler.apply(this, arguments);
-				code.apply(this, arguments);
-			};
-		}
-
-		datum[handlerName] = newHandler;
-	}
-
-
 	function enableWeekGridClicking(calendar, $weekGrid, weekGrid) {
 		$weekGrid.delegate('table:eq(1) > tbody > tr', 'click', function() {
 			var $tr = $(this),
@@ -54,7 +38,7 @@
 		var doIt = highlightToday.bind(this, $calendar, calendar);
 	
 		$calendar.bind('navigate change', doIt);
-		$('#DatePicker').change(doIt);
+		$('#weekgrid').bind('dataBound', doIt);
 		doIt();
 	}
 
@@ -70,9 +54,9 @@
 			// Deliberately avoiding events like blur and change which will fire when tab is changed (as this causes flicker)
 			.bind('keyup mouseout mousedown search', runFilter);
 
-		// Monkey patch tab selection event to...
-		monkeyPatchTelerikComponent($favTab, 'tTabStrip', 'onSelect', function() {
-			var	tabText = $(arguments[0].item).text();
+		// When a tab is selected...
+		$favTab.bind('select', function(event) {
+			var	tabText = $(event.item).text();
 
 			// Ensure that FF is only displayed for the appropriate tabs			
 			$li.toggle(contains(tabText, 'personal') || contains(tabText, 'team'));

@@ -7,9 +7,7 @@ TODO:
   - Shouldn't be able to trigger a month navigation in calendar
     - Disable day clickability if it would trigger a month change
       - How do we make the non-clickability obvious?
-- Highlight today:
-  - Needs to update in other situations (e.g. when 'Today' is clicked)
-  - Decide on appearance
+- Highlight today - decide on appearance
 - Remove manifest.json URLs if possible
 
 
