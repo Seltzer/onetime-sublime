@@ -1,12 +1,25 @@
 (function($) {
 	function enableWeekGridClicking(calendar, $weekGrid, weekGrid) {
-		$weekGrid.delegate('table:eq(1) > tbody > tr', 'click', function() {
-			var $tr = $(this),
-				dayIndex = $tr.index(),
-				boundDateTime = weekGrid.data[dayIndex].weekDateTime;
+		makeWeekGridClickable();
+		$weekGrid.bind('dataBound', makeWeekGridClickable);
 
-			calendar.value(boundDateTime);
-		});
+
+		function makeWeekGridClickable() {
+			var calendarMonth = calendar.viewedMonth.month();
+
+			$weekGrid.find('table:eq(1) > tbody > tr').each(function() {
+				var $tr = $(this),
+					dayIndex = $tr.index(),
+					boundDateTime = weekGrid.data[dayIndex].weekDateTime,
+					isThisMonth = boundDateTime.getMonth() === calendarMonth;
+
+				$tr.toggleClass('clickable', isThisMonth);
+				$tr.toggleClass('non-clickable', !isThisMonth);
+
+				if (isThisMonth)
+					$tr.click(function() { calendar.value(boundDateTime); });
+			});
+		}
 	}
 
 
@@ -34,11 +47,11 @@
 	}
 
 	
-	function enableTodayHighlighting($calendar, calendar) {
+	function enableTodayHighlighting($calendar, calendar, $weekGrid) {
 		var doIt = highlightToday.bind(this, $calendar, calendar);
 	
 		$calendar.bind('navigate change', doIt);
-		$('#weekgrid').bind('dataBound', doIt);
+		$weekGrid.bind('dataBound', doIt);
 		doIt();
 	}
 
@@ -89,6 +102,7 @@
 	
 
 	$(function() {
+		// Obtain DOM elements and Telerik components on page
 		var $cal = $('#cal'),
 			cal = $cal.data('tCalendar'),
 			$weekGrid = $('#weekgrid'),
@@ -100,7 +114,7 @@
 		if (config.enableWeekdayClicking)
 			enableWeekGridClicking(cal, $weekGrid, weekGrid);
 		if (config.enableTodayHighlighting)
-			enableTodayHighlighting($cal, cal);
+			enableTodayHighlighting($cal, cal, $weekGrid);
 		if (config.enableFavouritesFiltering)
 			enableFavouritesFiltering($favTab);
 	});

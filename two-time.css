@@ -1,7 +1,13 @@
-#weekgrid table > tbody > tr,
-#weekgrid table > tbody > tr * {
+#weekgrid table > tbody > tr.clickable,
+#weekgrid table > tbody > tr.clickable * {
     cursor: pointer;
 }
+
+#weekgrid table > tbody > tr.non-clickable,
+#weekgrid table > tbody > tr.non-clickable * {
+	color: gray;
+}
+
 
 #cal table > tbody > tr > td.today {
     border: 1px solid red;
