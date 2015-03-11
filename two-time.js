@@ -2,6 +2,7 @@
 	chrome.storage.sync.get(null, function (config) {
 		// Inject div whose purpose is to communicate extension config to below injected JS.
 		var configDiv = document.createElement('div');
+		configDiv.id = "two-time-config";
 		configDiv.setAttribute('data-two-time-config', JSON.stringify(config));
 		document.body.appendChild(configDiv);
 

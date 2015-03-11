@@ -1,4 +1,20 @@
 (function($) {
+	function monkeyPatchTelerikComponent($element, telerikDatumKey, handlerName, code) {
+		var datum = $element.data(telerikDatumKey),
+			currentHandler = datum[handlerName];
+
+		var newHandler = code;
+		if (currentHandler) {
+			newHandler = function() {
+				currentHandler.apply(this, arguments);
+				code.apply(this, arguments);
+			};
+		}
+
+		datum[handlerName] = newHandler;
+	}
+
+
 	function enableWeekGridClicking(calendar, $weekGrid, weekGrid) {
 		$weekGrid.delegate('table:eq(1) > tbody > tr', 'click', function() {
 			var $tr = $(this),
@@ -47,18 +63,40 @@
 		var $li = $('<li class="favourites-filter"></li>')
 			.appendTo($favTab.find('ul.t-tabstrip-items'));
 
-		$('<input type="search" placeholder="Type here to filter" />')
+		// Create search box and attach change handler
+		var $searchBox = $('<input type="search" placeholder="Type here to filter" />')
 			.appendTo($li)
 			// Using 'keyup' as 'keypress' ignores backspace. 'search' is fired when the user presses <ret> or clicks the X.
-			.bind('keyup change blur mousedown search', function(event) {
-		
-		var text = $(this).val().trim(),
-			$rows = $favTab.find('.t-grid-content table tbody tr');
-				
-		$rows.show();
+			// Deliberately avoiding events like blur and change which will fire when tab is changed (as this causes flicker)
+			.bind('keyup mouseout mousedown search', runFilter);
 
-		if (text)
-			$rows.filter(function() { return !contains($(this).text(), text); }).hide(); });
+		// Monkey patch tab selection event to...
+		monkeyPatchTelerikComponent($favTab, 'tTabStrip', 'onSelect', function() {
+			var	tabText = $(arguments[0].item).text();
+
+			// Ensure that FF is only displayed for the appropriate tabs			
+			$li.toggle(contains(tabText, 'personal') || contains(tabText, 'team'));
+			
+			// Blank out search box and re-run filter which will make all rows visible
+			$searchBox.val('');
+			runFilter();
+		});
+
+
+		// Define helper functions
+
+		function rowsOfCurrentTab() {
+			return $favTab.find('.t-content.t-state-active .t-grid-content table tbody tr');
+		}
+		
+		function runFilter() {
+			var text = $searchBox.val().trim();
+
+			rowsOfCurrentTab().each(function() {
+				var $row = $(this);
+				$row.toggle(!text || contains($row.text(), text));
+			});
+		};
 
 		function contains(text, substring) {
 			return text.toLowerCase().indexOf(substring.toLowerCase()) !== -1;
@@ -73,9 +111,14 @@
 			weekGrid = $weekGrid.data('tGrid'),
 			$favTab = $('#favTab');
 
-		enableWeekGridClicking(cal, $weekGrid, weekGrid);
-		enableTodayHighlighting($cal, cal);
-		enableFavouritesFiltering($favTab);
+		var config = $('#two-time-config').data('two-time-config');
+
+		if (config.enableWeekdayClicking)
+			enableWeekGridClicking(cal, $weekGrid, weekGrid);
+		if (config.enableTodayHighlighting)
+			enableTodayHighlighting($cal, cal);
+		if (config.enableFavouritesFiltering)
+			enableFavouritesFiltering($favTab);
 	});
 }(jQuery));
 
