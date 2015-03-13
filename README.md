@@ -3,12 +3,9 @@ Extensions / customisations for the Datacom internal web app called OneTime
 
 
 TODO:
-- Weekday clicking:
-  - Shouldn't be able to trigger a month navigation in calendar
-    - Disable day clickability if it would trigger a month change
-      - How do we make the non-clickability obvious?
 - Highlight today - decide on appearance
 - Remove manifest.json URLs if possible
+- TwoTime mod message with version
 
 
 CURRENT FEATURES:
@@ -26,3 +23,6 @@ UPCOMING FEATURES (Release 1):
 UPCOMING FEATURES (Release 2):
 * Modalise
 * Increase row heights in Favourites
+* Responsive bugfix for squashed calendar column
+* Responsive bugfix for timesheet section
+* 

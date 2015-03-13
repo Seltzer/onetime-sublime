@@ -1,4 +1,40 @@
 (function($) {
+	/**
+	 * Returns nested arrays, where the outer array corresponds to weeks and the inner to days starting with Monday
+	 */
+	function getWeeksInDisplayedCalendar($calendar, calendar) {
+		var firstDayOfCurrentMonth = calendar.viewedMonth.toDate(),
+			$mondays = $calendar.find('table tbody tr td:first-child');
+
+		return $.map($mondays, function (monday) {
+			var $monday = $(monday),
+				$weekDays = $monday.add($monday.nextAll());
+
+			return $.map($weekDays, function (wd) {
+				var $wd = $(wd),
+					day = parseInt($wd.text()),
+					isPrevMonth = $wd.hasClass('t-other-month') && day > 15,
+					isNextMonth = !isPrevMonth && $wd.hasClass('t-other-month') && day < 15;
+
+				// Compute date corresponding to selected day
+				var date = new Date(firstDayOfCurrentMonth);
+				if (isPrevMonth)
+					date.setMonth(date.getMonth() - 1);
+				if (isNextMonth)
+					date.setMonth(date.getMonth() + 1);
+
+				date.setDate(day);
+				
+				// Return day
+				return {
+					$td: $wd,
+					date: date
+				};
+			});
+		});
+	}
+
+
 	function enableWeekGridClicking(calendar, $weekGrid, weekGrid) {
 		makeWeekGridClickable();
 		$weekGrid.bind('dataBound', makeWeekGridClickable);
@@ -23,27 +59,21 @@
 	}
 
 
-	/**
-	 * This function is basically a hack to find the td element (if any) in the calendar which corresponds to today 
-	 */
 	function highlightToday($calendar, calendar) {
-		var today = new Date(),
-			todayDay = today.getDay() + 1;    // Because JS is hilarious
+		var todayDate = new Date(),
+			weeksInDisplayedCalendar = getWeeksInDisplayedCalendar($calendar, calendar),
+			// Flatten weeksInDisplayedCalendar to get days
+			days = Array.prototype.concat.apply([], weeksInDisplayedCalendar);
 
-		// We expect 1-2 candidate days, based on day number comparison; one from the current month, and possibly one from the previous/next
-		var $candidateDays = $calendar.find('table tbody td').filter(function() { return $(this).find('a.t-link').text() == todayDay; });
+		for (var i = 0; i < days.length; i++) {
+			var day = days[i],
+				date = day.date;
 
-		// Now let's pay attention to month, bearing in mind that the calendar displays up to 3 months at once
-		var $todayTd = $candidateDays.filter(function() { 
-			var isThisMonth = !$(this).hasClass('t-other-month'),
-				monthOffset = today.getMonth() - calendar.viewedMonth.month();
-
-			return (monthOffset === 0 && isThisMonth)
-				|| (monthOffset === 1 && todayDay < 15 && !isThisMonth)
-				|| (monthOffset === -1 && todayDay > 15 && !isThisMonth);
-		});
-	
-		$todayTd.addClass('today').addClass('today');
+			if (date.getYear() === todayDate.getYear() && date.getMonth() === todayDate.getMonth() 
+					&& date.getDate() === todayDate.getDate()) {
+				day.$td.addClass('today');				
+			}
+		}
 	}
 
 	
@@ -99,7 +129,7 @@
 			return text.toLowerCase().indexOf(substring.toLowerCase()) !== -1;
 		};
 	}
-	
+
 
 	$(function() {
 		// Obtain DOM elements and Telerik components on page
@@ -117,6 +147,8 @@
 			enableTodayHighlighting($cal, cal, $weekGrid);
 		if (config.enableFavouritesFiltering)
 			enableFavouritesFiltering($favTab);
+
+		// highlightIncompleteDays($cal, cal);
 	});
 }(jQuery));
 

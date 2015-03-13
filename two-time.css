@@ -10,7 +10,7 @@
 
 
 #cal table > tbody > tr > td.today {
-    border: 1px solid red;
+    border: 2px solid green;
     font-weight: bold;
 }
 
