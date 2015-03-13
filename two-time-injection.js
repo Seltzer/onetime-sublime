@@ -6,11 +6,11 @@
 		var firstDayOfCurrentMonth = calendar.viewedMonth.toDate(),
 			$mondays = $calendar.find('table tbody tr td:first-child');
 
-		return $.map($mondays, function (monday) {
+		return _.map($mondays, function (monday) {
 			var $monday = $(monday),
 				$weekDays = $monday.add($monday.nextAll());
 
-			return $.map($weekDays, function (wd) {
+			return _.map($weekDays, function (wd) {
 				var $wd = $(wd),
 					day = parseInt($wd.text()),
 					isPrevMonth = $wd.hasClass('t-other-month') && day > 15,
@@ -32,6 +32,67 @@
 				};
 			});
 		});
+	}
+
+
+	/**
+	 * Gets months of timesheets between specified dates. Returns a promise.
+	 * 
+	 * @returns A promise, whose value is an object where the keys are JS dates (with year/month/day and zeroed time), 
+	 * and the values are arrays of timesheets returned via the OneTime API
+	 */
+	function getMonthsOfTimesheets(from, to) {
+		to = to || new Date();
+
+		// Compute monthStarts, an array of dates corresponding to the starts of months of timesheets we want to retrieve
+		var firstMonth = new Date(from.getYear(), from.getMonth()),
+			lastMonth = new Date(to.getYear(), to.getMonth());
+
+		var monthStarts = [],
+			date = new Date(firstMonth);
+
+		do {
+			monthStarts.push(date);
+			date.setMonth(date.getMonth() + 1);
+		} while (date.getYear() <= to.getYear() || date.getMonth() <= to.getMonth());
+		
+
+		// Get timesheets for displayed calendar month, previous month and next.
+		return $.when(_.invoke(monthStarts, getTimesheetDate))
+			.done(function () {
+				return _.chain(arguments)
+					.map(function (result) { return result[0].data; })
+					.flatten()
+					// Group by a real JS date, not the stringly typed version we received from the API
+					.groupBy(function(entry) {
+						var dateComponents = entry.Date.split('/');
+						return new Date(dateComponents[2], dateComponents[1], dateComponents[0]);
+					})
+					.value();
+			});
+
+		// Helper for obtaining timesheet data
+		function getTimesheetData(date) {
+			var dateString = $.telerik.formatString('{0:MM/dd/yyyy}', date);
+			return $.post('http://onetime/Home/_selectdate?date=' + $.URLEncode(dateString) + '&viewType=' + $.URLEncode('View Month'), {});
+		}
+	}
+
+
+	/**
+	 * @see getMonthsOfTimesheets
+	 */
+	function getTimesheetsForDisplayedCalendar(calendar) {
+		var firstDayOfDisplayedMonth = calendar.viewedMonth.toDate();
+
+		// Ugh, JS date API is awful
+		var firstDayOfPreviousMonth = new Date(firstDayOfDisplayedMonth);
+		firstDayOfPreviousMonth.setMonth(firstDayOfPreviousMonth.getMonth() - 1);
+
+		var firstDayOfNextMonth = new Date(firstDayOfDisplayedMonth);
+		firstDayOfNextMonth.setMonth(firstDayOfNextMonth.getMonth() + 1);
+
+		return getTimesheetData(firstDayOfPreviousMonth, firstDayOfNextMonth);
 	}
 
 
@@ -61,19 +122,19 @@
 
 	function highlightToday($calendar, calendar) {
 		var todayDate = new Date(),
-			weeksInDisplayedCalendar = getWeeksInDisplayedCalendar($calendar, calendar),
-			// Flatten weeksInDisplayedCalendar to get days
-			days = Array.prototype.concat.apply([], weeksInDisplayedCalendar);
+			weeksInDisplayedCalendar = getWeeksInDisplayedCalendar($calendar, calendar);
 
-		for (var i = 0; i < days.length; i++) {
-			var day = days[i],
-				date = day.date;
+		var today = _.chain(weeksInDisplayedCalendar)
+			.flatten()
+			.find(function(day) { 
+				var date = day.date;
+				
+				return date.getYear() === todayDate.getYear() && date.getMonth() === todayDate.getMonth() 
+					&& date.getDate() === todayDate.getDate();
+			})
+			.value();
 
-			if (date.getYear() === todayDate.getYear() && date.getMonth() === todayDate.getMonth() 
-					&& date.getDate() === todayDate.getDate()) {
-				day.$td.addClass('today');				
-			}
-		}
+		today.$td.addClass('today');								
 	}
 
 	

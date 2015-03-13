@@ -6,10 +6,18 @@
 		configDiv.setAttribute('data-two-time-config', JSON.stringify(config));
 		document.body.appendChild(configDiv);
 
-		// Inject two-time JS into the OneTime DOM and kick everything off
+		// Inject Underscore JS and two-time-injection.js
+		inject('underscore-min.js');
+
+		if (typeof(_) === 'undefined')
+			inject('two-time-injection.js');
+	});
+
+
+	function inject(jsPath) {
 		var script = document.createElement('script');
 		script.setAttribute('type', 'text/javascript');
-		script.setAttribute('src', chrome.extension.getURL('two-time-injection.js'));
+		script.setAttribute('src', chrome.extension.getURL(jsPath));
 		document.body.appendChild(script);
-	});
+	}
 }());
