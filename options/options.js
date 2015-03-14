@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			enableTodayHighlighting: todayHighlightingCb.checked,
 			enableFavouritesFiltering: favsFilteringCb.checked,
 			enableWeekdayClicking: weekdayClickingCb.checked,
-			highlightIncompleteDays: highlightIncompleteDaysCb
+			highlightIncompleteDays: highlightIncompleteDaysCb.checked
 		});
 	}
 });

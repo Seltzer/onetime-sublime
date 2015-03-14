@@ -3,8 +3,12 @@
 	 * This exists for testing purposes.
 	 */
 	function getDateNow() {
-//		return new Date(2014, 7, 1);
 		return new Date();
+	}
+
+	
+	function isWeekDay(date) {
+		return !!(date.getDay() % 6);
 	}
 	
 
@@ -225,34 +229,58 @@
 	}
 
 
+	function enableIncompleteDayHighlighting($calendar, calendar, $weekGrid) {
+		var doIt = highlightIncompleteDays.bind(this, $calendar, calendar);
+
+		$calendar.bind('navigate change', doIt);
+		$weekGrid.bind('dataBound', doIt);
+		doIt();
+	}
+
+
 	function highlightIncompleteDays($calendar, calendar) {
 		var weeksInCalendar = getWeeksInDisplayedCalendar($calendar, calendar);
-
-		// TODO: Compare to showjobOptions.stdHours
-		// TODO: Compare to showjobOptions.
 
 		// Fetch timesheets for displayed calendar
 		getTimesheetsForDisplayedCalendar(calendar)
 			.done(function(timesheets) {
-				// Iterate over calendar weeks
 				_.each(weeksInCalendar, function(week) {
-					console.log('week starting on ' + week[0].date);
-
-					var timesheetsForWeek = _.chain(week)
-						.pluck('date')
-						.map(function(date) {
-							return timesheets[date] || [];
-						})
-						.value();
-
-					var totalHours = _.chain(timesheetsForWeek)
-						.flatten()
-						.reduce(function(total, t) { return total + t.Duration; }, 0)
-						.value();
-						
-					console.log(totalHours);
+					processWeek(timesheets, week);
 				});
 			});
+
+
+		function processWeek(timesheets, week) {
+			// Attach timesheet info to days from above
+			var augmentedDays = _.map(week, function(day) {
+				return {
+					date: day.date,
+					$calendarTd: day.$td,
+					timesheets: timesheets[day.date] || []
+				};
+			});
+
+			// Compute total hours for week - this has a bearing on whether we mark days as incomplete
+			var totalHours = _.chain(augmentedDays)
+				.pluck('timesheets')
+				.flatten()
+				.reduce(function(total, t) { return total + t.Duration; }, 0)
+				.value();
+
+			// If user has clocked more than the standard week amount, we shan't mark any days as incomplete
+			if (totalHours >= showjobsOptions.stdHoursPerWeek)
+				return;
+
+			_.chain(augmentedDays)
+				.filter(function(day) {
+					return isWeekDay(day.date)
+						&& day.timesheets.reduce(function(total, t) { return total + t.Duration; }, 0) < showjobsOptions.stdHours;
+				})
+				.pluck('$calendarTd')
+				.each(function($td) {
+					$td.addClass('incomplete');
+				});
+		}
 	}
 
 
@@ -273,7 +301,7 @@
 		if (config.enableFavouritesFiltering)
 			enableFavouritesFiltering($favTab);
 		if (config.highlightIncompleteDays)
-			highlightIncompleteDays($cal, cal);
+			enableIncompleteDayHighlighting($cal, cal, $weekGrid);
 	});
 }(jQuery));
 
