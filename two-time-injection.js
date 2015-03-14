@@ -136,8 +136,9 @@
 
 
 	function enableWeekGridClicking($calendar, calendar, $weekGrid, weekGrid) {
-		makeWeekGridClickable();
+		$calendar.bind('navigate', makeWeekGridClickable);
 		$weekGrid.bind('dataBound', makeWeekGridClickable);
+		makeWeekGridClickable();
 
 
 		function makeWeekGridClickable() {
@@ -285,6 +286,11 @@
 
 
 	$(function() {
+		$('<span id="two-time-soapbox">' + 
+			'Modded with <a target="_blank" href="https://github.com/Seltzer/two-time">TwoTime v1.0.0</a>' + 
+		  '</span>')
+		  .appendTo($('#titleContainer'));
+
 		// Obtain DOM elements and Telerik components on page
 		var $cal = $('#cal'),
 			cal = $cal.data('tCalendar'),

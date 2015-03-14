@@ -23,3 +23,21 @@
     display: inline-block;
     position: relative;
 }
+
+
+#two-time-soapbox {
+	float: right;
+	font-size: 0.7em;
+	line-height: 25px;
+	margin-right: 20px;
+}
+
+#two-time-soapbox > a {
+	font-weight: bold;
+}
+
+@media screen and (max-width: 1300px) {
+	#two-time-soapbox {
+		display: none;
+	}
+}
