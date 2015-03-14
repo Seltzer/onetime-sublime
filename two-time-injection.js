@@ -44,6 +44,19 @@
 	}
 
 
+	function getDayInCalendar($calendar, calendar, date) {
+		var weeksInDisplayedCalendar = getWeeksInDisplayedCalendar($calendar, calendar);
+
+		return _.chain(weeksInDisplayedCalendar)
+			.flatten()
+			.find(function(day) { 
+				return day.date.getFullYear() === date.getFullYear() && day.date.getMonth() === date.getMonth() 
+					&& day.date.getDate() === date.getDate();
+			})
+			.value();
+	}
+
+
 	/**
 	 * Gets months of timesheets between specified dates. Returns a promise.
 	 * 
@@ -118,7 +131,7 @@
 	}
 
 
-	function enableWeekGridClicking(calendar, $weekGrid, weekGrid) {
+	function enableWeekGridClicking($calendar, calendar, $weekGrid, weekGrid) {
 		makeWeekGridClickable();
 		$weekGrid.bind('dataBound', makeWeekGridClickable);
 
@@ -135,8 +148,19 @@
 				$tr.toggleClass('clickable', isThisMonth);
 				$tr.toggleClass('non-clickable', !isThisMonth);
 
-				if (isThisMonth)
-					$tr.click(function() { calendar.value(boundDateTime); });
+				if (isThisMonth) {
+					$tr.click(function() { 
+						// Weekday clicking should trigger all the same behaviour as calendar clicking.
+						// The safest way to ensure this happens is to simulate a calendar click.
+						var dayInCalendar = getDayInCalendar($calendar, calendar, boundDateTime);
+						dayInCalendar.$td.children('a').click();
+
+						// But for reasons unknown the event triggered by the above simulated click has the incorrect srcElement, 
+						// causing calendar highlighting to break. So we'll have to do it manually.
+						if (typeof(HighlightCalendarWeek) !== 'undefined')
+							HighlightCalendarWeek(dayInCalendar.$td);
+					});
+				}
 			});
 		}
 	}
@@ -149,19 +173,7 @@
 
 
 		function highlightToday() {
-			var todayDate = getDateNow(),
-				weeksInDisplayedCalendar = getWeeksInDisplayedCalendar($calendar, calendar);
-
-			var today = _.chain(weeksInDisplayedCalendar)
-				.flatten()
-				.find(function(day) { 
-					var date = day.date;
-					
-					return date.getFullYear() === todayDate.getFullYear() && date.getMonth() === todayDate.getMonth() 
-						&& date.getDate() === todayDate.getDate();
-				})
-				.value();
-
+			var today = getDayInCalendar($calendar, calendar, getDateNow());
 			if (today)
 				today.$td.addClass('today');								
 		}
@@ -255,7 +267,7 @@
 		var config = $('#two-time-config').data('two-time-config');
 
 		if (config.enableWeekdayClicking)
-			enableWeekGridClicking(cal, $weekGrid, weekGrid);
+			enableWeekGridClicking($cal, cal, $weekGrid, weekGrid);
 		if (config.enableTodayHighlighting)
 			enableTodayHighlighting($cal, cal, $weekGrid);
 		if (config.enableFavouritesFiltering)
