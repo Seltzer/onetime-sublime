@@ -7,10 +7,10 @@
 		document.body.appendChild(configDiv);
 
 		// Inject Underscore JS and two-time-injection.js
-		inject('underscore-min.js');
+		inject('lib/underscore-min.js');
 
 		if (typeof(_) === 'undefined')
-			inject('two-time-injection.js');
+			inject('two-time-mod.js');
 	});
 
 

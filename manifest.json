@@ -1,13 +1,9 @@
 {
     "author": "Nathan Pitman",
-    "background": {
-        "scripts": ["background.js"],
-        "persistent": true
-    },
 	"content_scripts": [
 		{
 			"matches": ["URL1 GOES HERE", ["URL2 GOES HERE"]
-			"css": ["two-time.css"],
+			"css": ["two-time-mod.css"],
 			"js": ["two-time.js"]
 		}
 	],
@@ -23,8 +19,8 @@
     ],
     "version": "1.0.0",
     "web_accessible_resources": [
-		"two-time-injection.js",
-		"underscore-min.js",
-		"underscore-min.map"
+		"two-time-mod.js",
+		"lib/underscore-min.js",
+		"lib/underscore-min.map"
     ]
 }
