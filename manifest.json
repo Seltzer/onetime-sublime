@@ -4,7 +4,7 @@
 		{
 			"matches": ["URL1 GOES HERE", ["URL2 GOES HERE"]
 			"css": ["two-time-mod.css"],
-			"js": ["two-time.js"]
+			"js": ["two-time-injector.js"]
 		}
 	],
     "description": "",
