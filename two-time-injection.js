@@ -1,5 +1,14 @@
 (function($) {
 	/**
+	 * This exists for testing purposes.
+	 */
+	function getDateNow() {
+//		return new Date(2014, 7, 1);
+		return new Date();
+	}
+	
+
+	/**
 	 * Returns nested arrays, where the outer array corresponds to weeks and the inner to days starting with Monday
 	 */
 	function getWeeksInDisplayedCalendar($calendar, calendar) {
@@ -42,39 +51,52 @@
 	 * and the values are arrays of timesheets returned via the OneTime API
 	 */
 	function getMonthsOfTimesheets(from, to) {
-		to = to || new Date();
+		to = to || getDateNow();
+
+		if (from > to)
+			throw 'from must be <= to';
 
 		// Compute monthStarts, an array of dates corresponding to the starts of months of timesheets we want to retrieve
-		var firstMonth = new Date(from.getYear(), from.getMonth()),
-			lastMonth = new Date(to.getYear(), to.getMonth());
+		var firstMonth = new Date(from.getFullYear(), from.getMonth()),
+			lastMonth = new Date(to.getFullYear(), to.getMonth());
 
 		var monthStarts = [],
 			date = new Date(firstMonth);
 
 		do {
 			monthStarts.push(date);
+			date = new Date(date);
 			date.setMonth(date.getMonth() + 1);
-		} while (date.getYear() <= to.getYear() || date.getMonth() <= to.getMonth());
+		} while (date <= to);
 		
+		// For each month to retrieve, call the OneTime API
+		var deferredResults = _.map(monthStarts, getTimesheetData);
 
-		// Get timesheets for displayed calendar month, previous month and next.
-		return $.when(_.invoke(monthStarts, getTimesheetDate))
-			.done(function () {
-				return _.chain(arguments)
+		// When all calls resolve...
+		return $.when.apply($, deferredResults)
+			.pipe(function () {
+				var timesheets = _.chain(arguments)
 					.map(function (result) { return result[0].data; })
 					.flatten()
 					// Group by a real JS date, not the stringly typed version we received from the API
 					.groupBy(function(entry) {
 						var dateComponents = entry.Date.split('/');
-						return new Date(dateComponents[2], dateComponents[1], dateComponents[0]);
+						return new Date(dateComponents[2], dateComponents[1] - 1, dateComponents[0]);
 					})
 					.value();
+
+				return $.Deferred().resolve(timesheets);
 			});
+
 
 		// Helper for obtaining timesheet data
 		function getTimesheetData(date) {
 			var dateString = $.telerik.formatString('{0:MM/dd/yyyy}', date);
-			return $.post('http://onetime/Home/_selectdate?date=' + $.URLEncode(dateString) + '&viewType=' + $.URLEncode('View Month'), {});
+
+			var url = '/Home/_selectdate?date='	+ $.URLEncode(dateString) + '&UserName=' + showjobsOptions.userName
+				+ '&viewType=' + 'View%20Month';
+
+			return $.post(url, {});
 		}
 	}
 
@@ -92,7 +114,7 @@
 		var firstDayOfNextMonth = new Date(firstDayOfDisplayedMonth);
 		firstDayOfNextMonth.setMonth(firstDayOfNextMonth.getMonth() + 1);
 
-		return getTimesheetData(firstDayOfPreviousMonth, firstDayOfNextMonth);
+		return getMonthsOfTimesheets(firstDayOfPreviousMonth, firstDayOfNextMonth);
 	}
 
 
@@ -119,31 +141,30 @@
 		}
 	}
 
-
-	function highlightToday($calendar, calendar) {
-		var todayDate = new Date(),
-			weeksInDisplayedCalendar = getWeeksInDisplayedCalendar($calendar, calendar);
-
-		var today = _.chain(weeksInDisplayedCalendar)
-			.flatten()
-			.find(function(day) { 
-				var date = day.date;
-				
-				return date.getYear() === todayDate.getYear() && date.getMonth() === todayDate.getMonth() 
-					&& date.getDate() === todayDate.getDate();
-			})
-			.value();
-
-		today.$td.addClass('today');								
-	}
-
 	
 	function enableTodayHighlighting($calendar, calendar, $weekGrid) {
-		var doIt = highlightToday.bind(this, $calendar, calendar);
-	
-		$calendar.bind('navigate change', doIt);
-		$weekGrid.bind('dataBound', doIt);
-		doIt();
+		$calendar.bind('navigate change', highlightToday);
+		$weekGrid.bind('dataBound', highlightToday);
+		highlightToday();
+
+
+		function highlightToday() {
+			var todayDate = getDateNow(),
+				weeksInDisplayedCalendar = getWeeksInDisplayedCalendar($calendar, calendar);
+
+			var today = _.chain(weeksInDisplayedCalendar)
+				.flatten()
+				.find(function(day) { 
+					var date = day.date;
+					
+					return date.getFullYear() === todayDate.getFullYear() && date.getMonth() === todayDate.getMonth() 
+						&& date.getDate() === todayDate.getDate();
+				})
+				.value();
+
+			if (today)
+				today.$td.addClass('today');								
+		}
 	}
 
 
@@ -192,6 +213,37 @@
 	}
 
 
+	function highlightIncompleteDays($calendar, calendar) {
+		var weeksInCalendar = getWeeksInDisplayedCalendar($calendar, calendar);
+
+		// TODO: Compare to showjobOptions.stdHours
+		// TODO: Compare to showjobOptions.
+
+		// Fetch timesheets for displayed calendar
+		getTimesheetsForDisplayedCalendar(calendar)
+			.done(function(timesheets) {
+				// Iterate over calendar weeks
+				_.each(weeksInCalendar, function(week) {
+					console.log('week starting on ' + week[0].date);
+
+					var timesheetsForWeek = _.chain(week)
+						.pluck('date')
+						.map(function(date) {
+							return timesheets[date] || [];
+						})
+						.value();
+
+					var totalHours = _.chain(timesheetsForWeek)
+						.flatten()
+						.reduce(function(total, t) { return total + t.Duration; }, 0)
+						.value();
+						
+					console.log(totalHours);
+				});
+			});
+	}
+
+
 	$(function() {
 		// Obtain DOM elements and Telerik components on page
 		var $cal = $('#cal'),
@@ -208,8 +260,8 @@
 			enableTodayHighlighting($cal, cal, $weekGrid);
 		if (config.enableFavouritesFiltering)
 			enableFavouritesFiltering($favTab);
-
-		// highlightIncompleteDays($cal, cal);
+		if (config.highlightIncompleteDays)
+			highlightIncompleteDays($cal, cal);
 	});
 }(jQuery));
 

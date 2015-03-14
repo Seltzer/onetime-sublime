@@ -3,9 +3,9 @@ Extensions / customisations for the Datacom internal web app called OneTime
 
 
 TODO:
-- Highlight today - decide on appearance
 - Remove manifest.json URLs if possible
 - TwoTime mod message with version
+- Weekday clickability needs to trigger updates in other panes
 
 
 CURRENT FEATURES:
