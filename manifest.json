@@ -1,0 +1,30 @@
+{
+    "author": "Nathan Pitman",
+    "background": {
+        "scripts": ["background.js"],
+        "persistent": true
+    },
+	"content_scripts": [
+		{
+			"matches": ["URL1 GOES HERE", ["URL2 GOES HERE"]
+			"css": ["two-time.css"],
+			"js": ["two-time.js"]
+		}
+	],
+    "description": "",
+    "manifest_version": 2,
+    "minimum_chrome_version": "16",
+	"name": "TwoTime",
+	"options_page": "options/options.html",
+    "permissions": [
+		"storage",
+		"URL1 GOES HERE",
+		"URL2 GOES HERE"
+    ],
+    "version": "1.0.0",
+    "web_accessible_resources": [
+		"two-time-injection.js",
+		"underscore-min.js",
+		"underscore-min.map"
+    ]
+}
