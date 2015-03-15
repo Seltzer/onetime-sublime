@@ -2,13 +2,14 @@
 Extensions / customisations for the Datacom internal web app called OneTime
 
 
-TODO:
-- Remove manifest.json URLs if possible
+TODO (now):
 - Need a good solution for the mishmash of colours for (current day, current week, public 
   holiday, incomplete day, today)
-- Calendar navigation isn't very pretty
 - Fix responsive bugs
 - Chuck Norris jokes
+
+TODO (later):
+- Calendar navigation isn't very pretty
 
 
 CURRENT FEATURES:
@@ -24,4 +25,3 @@ UPCOMING FEATURES
 * Increase row heights in Favourites
 * Responsive bugfix for squashed calendar column
 * Responsive bugfix for timesheet section
-* 

@@ -6,11 +6,13 @@
 		configDiv.setAttribute('data-two-time-config', JSON.stringify(config));
 		document.body.appendChild(configDiv);
 
-		// Inject Underscore JS and two-time-injection.js
-		inject('lib/underscore-min.js');
-
+		// Inject Underscore JS
 		if (typeof(_) === 'undefined')
-			inject('two-time-mod.js');
+			inject('lib/underscore-min.js');
+
+		// Inject TwoTime scripts
+		inject('core.js');
+		inject('two-time-mod.js');
 	});
 
 

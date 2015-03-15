@@ -2,7 +2,7 @@
     "author": "Nathan Pitman",
 	"content_scripts": [
 		{
-			"matches": ["URL1 GOES HERE", ["URL2 GOES HERE"]
+			"matches": ["URLs removed (ask Nathan)"],
 			"css": ["two-time-mod.css"],
 			"js": ["two-time-injector.js"]
 		}
@@ -14,11 +14,11 @@
 	"options_page": "options/options.html",
     "permissions": [
 		"storage",
-		"URL1 GOES HERE",
-		"URL2 GOES HERE"
+		"URLs removed (ask Nathan)"
     ],
     "version": "1.0.0",
     "web_accessible_resources": [
+		"core.js",
 		"two-time-mod.js",
 		"lib/underscore-min.js",
 		"lib/underscore-min.map"
