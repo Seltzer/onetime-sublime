@@ -1,7 +1,7 @@
 (function($) {
 	
 	/**
-	 * The weekday clicking feature is intended to emulate the OneTime calendar clicking functionality. That is:
+	 * The weekday clicking feature is intended to emulate the OneTime calendar clicking functionality in that:
 	 *   - Clicking on a day will never result in the month changing
 	 *   - Non-clickable days (those outside the displayed month) are displayed in grey.
 	 *   - Clicking a weekday should trigger an update to various OneTime panes as if it were a calendar click
@@ -19,7 +19,7 @@
 			if ($tr.hasClass('clickable')) {
 				// If we want to emulate calendar behaviour, the safest way (least likely to break when OneTime is updated)
 				// is to simulate a calendar click.
-				var dayInCalendar = twoTime.core.getDayInDisplayedCalendar($calendar, calendar, date);
+				var dayInCalendar = ots.core.getDayInDisplayedCalendar($calendar, calendar, date);
 
 				// This shouldn't happen.
 				if (!dayInCalendar)
@@ -59,7 +59,7 @@
 
 
 		function highlightToday() {
-			var today = twoTime.core.getDayInDisplayedCalendar($calendar, calendar, twoTime.core.getDateNow());
+			var today = ots.core.getDayInDisplayedCalendar($calendar, calendar, ots.core.getDateNow());
 			if (today)
 				today.$td.addClass('today');								
 		}
@@ -119,15 +119,15 @@
 
 		function highlightIncompleteDays() {
 			// Fetch a representation of the weeks currently displayed in the calendar. We'll be working with these
-			var weeksInCalendar = twoTime.core.getWeeksInDisplayedCalendar($calendar, calendar);
+			var weeksInCalendar = ots.core.getWeeksInDisplayedCalendar($calendar, calendar);
 
 			// We're going to fetch three months of timesheets, guaranteed to cover the displayed month
 			var firstDayOfDisplayedMonth = calendar.viewedMonth.toDate(),
-				firstDayOfPreviousMonth = twoTime.core.addMonths(firstDayOfDisplayedMonth, -1),
-				firstDayOfNextMonth = twoTime.core.addMonths(firstDayOfDisplayedMonth, 1);
+				firstDayOfPreviousMonth = ots.core.addMonths(firstDayOfDisplayedMonth, -1),
+				firstDayOfNextMonth = ots.core.addMonths(firstDayOfDisplayedMonth, 1);
 
 			// Fetch, correlate, process.
-			twoTime.core.getMonthsOfTimesheets(firstDayOfPreviousMonth, firstDayOfNextMonth)
+			ots.core.getMonthsOfTimesheets(firstDayOfPreviousMonth, firstDayOfNextMonth)
 				.done(function(timesheets) {
 					_.each(weeksInCalendar, function(week) {
 						processWeek(timesheets, week);
@@ -162,7 +162,7 @@
 					.filter(function(day) {
 						var hoursClocked = day.timesheets.reduce(function(total, ts) { return total + ts.Duration; }, 0);
 
-						return twoTime.core.isWeekDay(day.date)	&& hoursClocked < showjobsOptions.stdHours;
+						return ots.core.isWeekDay(day.date)	&& hoursClocked < showjobsOptions.stdHours;
 					})
 					.pluck('$calendarTd')
 					.each(function($td) {
@@ -174,9 +174,9 @@
 
 
 	$(function() {
-		// Add soapbox
-		$('<span id="two-time-soapbox">' + 
-			'Modded with <a target="_blank" href="https://github.com/Seltzer/two-time">TwoTime v1.0.0</a>' + 
+		// Add OTS header
+		$('<span id="ots-header">' + 
+			'Modded with <a target="_blank" href="https://github.com/Seltzer/onetime-sublime">OneTime Sublime v1.0.0</a>' + 
 		  '</span>')
 		  .appendTo($('#titleContainer'));
 
@@ -187,13 +187,13 @@
 			weekGrid = $weekGrid.data('tGrid'),
 			$favTab = $('#favTab');
 
-		var config = $('#two-time-config').data('two-time-config');
+		var config = $('#ots-config').data('ots-config');
 
 		if (config.enableFavouritesFiltering)
 			enableFavouritesFiltering($favTab);
-		if (config.highlightIncompleteDays)
+		if (config.enableIncompleteDaysHighlighting)
 			enableIncompleteDayHighlighting($cal, cal, $weekGrid);
-		if (config.enableWeekdayClicking)
+		if (config.enableWeekGridClicking)
 			enableWeekGridClicking($cal, cal, $weekGrid, weekGrid);
 		if (config.enableTodayHighlighting)
 			enableTodayHighlighting($cal, cal, $weekGrid);

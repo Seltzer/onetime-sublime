@@ -2,27 +2,27 @@ document.addEventListener('DOMContentLoaded', function() {
 	var
 		todayHighlightingCb = document.getElementById('today-highlighting-cb'),
 		favsFilteringCb = document.getElementById('favs-filtering-cb'),
-		weekdayClickingCb = document.getElementById('weekday-clicking-cb'),
-		highlightIncompleteDaysCb = document.getElementById('highlight-incomplete-days');
+		weekGridClickingCb = document.getElementById('week-grid-clicking-cb'),
+		incompleteDaysHighlightingCb = document.getElementById('incomplete-days-highlighting-cb');
 
 	restoreOptions();
 
 	todayHighlightingCb.onclick = persistOptions;
 	favsFilteringCb.onclick = persistOptions;
-	weekdayClickingCb.onclick = persistOptions;
-	highlightIncompleteDaysCb.onclick = persistOptions;
+	weekGridClickingCb.onclick = persistOptions;
+	incompleteDaysHighlightingCb.onclick = persistOptions;
 	
 	function restoreOptions() {
 		chrome.storage.sync.get({
 			enableTodayHighlighting: true,
 			enableFavouritesFiltering: true,
-			enableWeekdayClicking: true,
-			highlightIncompleteDays: true
+			enableWeekGridClicking: true,
+			enableIncompleteDaysHighlighting: true
 		}, function (config) {
 			todayHighlightingCb.checked = config.enableTodayHighlighting;
 			favsFilteringCb.checked = config.enableFavouritesFiltering;
-			weekdayClickingCb.checked = config.enableWeekdayClicking;
-			highlightIncompleteDaysCb.checked = config.highlightIncompleteDays;
+			weekGridClickingCb.checked = config.enableWeekGridClicking;
+			incompleteDaysHighlightingCb.checked = config.enableIncompleteDaysHighlighting;
 		});
 	}
 
@@ -31,8 +31,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		chrome.storage.sync.set({
 			enableTodayHighlighting: todayHighlightingCb.checked,
 			enableFavouritesFiltering: favsFilteringCb.checked,
-			enableWeekdayClicking: weekdayClickingCb.checked,
-			highlightIncompleteDays: highlightIncompleteDaysCb.checked
+			enableWeekGridClicking: weekGridClickingCb.checked,
+			enableIncompleteDaysHighlighting: incompleteDaysHighlightingCb.checked
 		});
 	}
 });

@@ -1,11 +1,11 @@
-var twoTime = {};
+var ots = {};
 
 /**
  * Contains:
- *   - General JS utility functions... mostly date related because the JS date API is terribad.
- *   - OneTime specific things
+ *   - JS utility functions... mostly date related because the JS date API is terribad.
+ *   - Useful OneTime specific things
  */
-twoTime.core = (function() {
+ots.core = (function() {
 
 	return {
 		/**
@@ -32,7 +32,7 @@ twoTime.core = (function() {
 
 			return returnDate;
 		},
-	
+
 
 		/**
 		 * Returns nested arrays, where the outer array corresponds to weeks and the inner to days starting with Monday
@@ -74,7 +74,7 @@ twoTime.core = (function() {
 		 * @returns An object like that returned by getWeeksInDisplayedCalendar
 		 */
 		getDayInDisplayedCalendar: function($calendar, calendar, date) {
-			var weeksInDisplayedCalendar = twoTime.core.getWeeksInDisplayedCalendar($calendar, calendar);
+			var weeksInDisplayedCalendar = ots.core.getWeeksInDisplayedCalendar($calendar, calendar);
 
 			return _.chain(weeksInDisplayedCalendar)
 				.flatten()
@@ -94,7 +94,7 @@ twoTime.core = (function() {
 		 */
 		getMonthsOfTimesheets: function(from, to) {
 			// Prepare
-			to = to || twoTime.core.getDateNow();
+			to = to || ots.core.getDateNow();
 			if (from > to)
 				throw 'from must be <= to';
 

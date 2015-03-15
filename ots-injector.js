@@ -1,16 +1,24 @@
 (function() {
-	chrome.storage.sync.get(null, function (config) {
+	// TODO: This is duplicated elsewhere. Annoying.
+	var defaultOtsConfig = {
+		enableTodayHighlighting: true,
+		enableFavouritesFiltering: true,
+		enableWeekGridClicking: true,
+		enableIncompleteDaysHighlighting: true
+	};
+	
+	chrome.storage.sync.get(defaultOtsConfig, function (config) {
 		// Inject div whose purpose is to communicate extension config to below injected JS.
 		var configDiv = document.createElement('div');
-		configDiv.id = "two-time-config";
-		configDiv.setAttribute('data-two-time-config', JSON.stringify(config));
+		configDiv.id = "ots-config";
+		configDiv.setAttribute('data-ots-config', JSON.stringify(config));
 		document.body.appendChild(configDiv);
 
 		// Inject Underscore JS
 		if (typeof(_) === 'undefined')
 			inject('lib/underscore-min.js');
 
-		// Inject TwoTime scripts
+		// Inject OTS scripts
 		inject('core.js');
 		inject('mod.js');
 	});
