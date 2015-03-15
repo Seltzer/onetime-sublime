@@ -4,7 +4,7 @@ Enhancements for an internal web app called OneTime, in the form of a Chrome ext
 
 ## Current features
 - **Week grid clicking**  
-Days in the week grid (below the calendar) are clickable!
+Days in the week grid (below the calendar) are clickable! <sup>*</sup>
 
 
 - **Real time filtering of Favourites**  
@@ -16,17 +16,20 @@ OneTime already highlights incomplete days in the Week Grid in red. Now they're 
 
 
 - **Calendar highlighting of today's date**  
-The calendar entry for the current date is emboldened and given a green border. Note that this is distinct from the _currently selected day / week, which OneTime already highlights in shades of blue.
+The calendar entry for the current date is emboldened and given a green border. Note that this is distinct from the _currently selected day / week_, which OneTime already highlights in shades of blue.
 
 
 Note that the above features can be switched on and off via Settings -> Extensions -> OneTime Sublime options (or chrome://extensions)
 
+<sub>(*) To remain consistent with the OneTime calendar and to respect their design choice, weekdays are greyed out and become non-clickable when they correspond to previous/next months.</sub>
+
 
 ## TODO
-- Need a colour scheme for when today is incomplete. Currently, it's highlighted in OneTime blue.
 - Fix responsive bugs in vanilla OneTime (squashed calendar column, timesheet section etc.)
-- I feel that users should be rewarded when completing timesheets.
+- Fix today highlighting hack... it leads to a slight delay when navigating between months.
 - Calendar navigation could be prettier
 - Feature: Jump to first incomplete day
+- Feature: I feel that users should be rewarded when completing timesheets. With Chuck Norris jokes.
 - Feature: Increase row heights in Favourites
 - Feature: Modalise
+

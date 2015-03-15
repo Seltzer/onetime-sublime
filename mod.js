@@ -53,7 +53,14 @@
 
 	
 	function enableTodayHighlighting($calendar, calendar, $weekGrid) {
-		$calendar.bind('navigate change', highlightToday);
+		$calendar
+			.bind('change', highlightToday)
+			.bind('navigate', function() {
+				// TODO: Massive hack. Find better way of figuring out when animation is complete
+				setTimeout(highlightToday, 500);
+			});
+		//$calendar.bind('navigate change', highlightToday);
+
 		$weekGrid.bind('dataBound', highlightToday);
 		highlightToday();
 
@@ -126,7 +133,7 @@
 				firstDayOfPreviousMonth = ots.core.addMonths(firstDayOfDisplayedMonth, -1),
 				firstDayOfNextMonth = ots.core.addMonths(firstDayOfDisplayedMonth, 1);
 
-			// Fetch, correlate, process.
+			// Fetch timesheets, correlate with week representation, process.
 			ots.core.getMonthsOfTimesheets(firstDayOfPreviousMonth, firstDayOfNextMonth)
 				.done(function(timesheets) {
 					_.each(weeksInCalendar, function(week) {
@@ -157,17 +164,19 @@
 				if (totalHours >= showjobsOptions.stdHoursPerWeek)
 					return;
 
-				// Take weekdays which fall under daily quota and mark them as incomplete.
-				_.chain(augmentedDays)
-					.filter(function(day) {
+				// Partition days based on completeness
+				var partitions = _.chain(augmentedDays)
+					.partition(function(day) {
 						var hoursClocked = day.timesheets.reduce(function(total, ts) { return total + ts.Duration; }, 0);
 
 						return ots.core.isWeekDay(day.date)	&& hoursClocked < showjobsOptions.stdHours;
 					})
-					.pluck('$calendarTd')
-					.each(function($td) {
-						$td.addClass('incomplete');
-					});
+					.map(function(partition) { return _.pluck(partition, '$calendarTd'); })
+					.value();
+
+				// Mark as complete/incomplete accordingly
+				_.each(partitions[0], function($incompleteDayTd) { $incompleteDayTd.addClass('incomplete'); });
+				_.each(partitions[1], function($completeDayTd) { $completeDayTd.removeClass('incomplete'); });
 			}
 		}
 	}

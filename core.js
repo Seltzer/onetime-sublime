@@ -40,7 +40,7 @@ ots.core = (function() {
 		getWeeksInDisplayedCalendar: function($calendar, calendar) {
 			var firstDayOfCurrentMonth = calendar.viewedMonth.toDate(),
 				$mondays = $calendar.find('table tbody tr td:first-child');
-
+			
 			return _.map($mondays, function (monday) {
 				var $monday = $(monday),
 					$weekDays = $monday.add($monday.nextAll());
