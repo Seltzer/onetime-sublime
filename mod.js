@@ -1,36 +1,52 @@
 (function($) {
 	
+	/**
+	 * The weekday clicking feature is intended to emulate the OneTime calendar clicking functionality. That is:
+	 *   - Clicking on a day will never result in the month changing
+	 *   - Non-clickable days (those outside the displayed month) are displayed in grey.
+	 *   - Clicking a weekday should trigger an update to various OneTime panes as if it were a calendar click
+	 */
 	function enableWeekGridClicking($calendar, calendar, $weekGrid, weekGrid) {
-		$calendar.bind('navigate', makeWeekGridClickable);
-		$weekGrid.bind('dataBound', makeWeekGridClickable);
-		makeWeekGridClickable();
+		$calendar.bind('navigate', updateWeekGridClickability);
+		$weekGrid.bind('dataBound', updateWeekGridClickability);
+		updateWeekGridClickability();
 
 
-		function makeWeekGridClickable() {
+		$weekGrid.delegate('table:eq(1) > tbody > tr', 'click', function() {
+			var $tr = $(this),
+				date = $tr.data('date');
+			
+			if ($tr.hasClass('clickable')) {
+				// If we want to emulate calendar behaviour, the safest way (least likely to break when OneTime is updated)
+				// is to simulate a calendar click.
+				var dayInCalendar = twoTime.core.getDayInDisplayedCalendar($calendar, calendar, date);
+
+				// This shouldn't happen.
+				if (!dayInCalendar)
+					return;
+
+				dayInCalendar.$td.children('a').click();
+
+				// But for reasons unknown the event triggered by the above simulated click has the incorrect srcElement, 
+				// causing calendar highlighting to break. So we'll have to do it manually.
+				if (typeof(HighlightCalendarWeek) !== 'undefined')
+					HighlightCalendarWeek(dayInCalendar.$td);
+			}
+		});
+
+		
+		function updateWeekGridClickability() {
 			var calendarMonth = calendar.viewedMonth.month();
 
 			$weekGrid.find('table:eq(1) > tbody > tr').each(function() {
 				var $tr = $(this),
-					dayIndex = $tr.index(),
-					boundDateTime = weekGrid.data[dayIndex].weekDateTime,
-					isThisMonth = boundDateTime.getMonth() === calendarMonth;
+					boundDateTime = weekGrid.data[$tr.index()].weekDateTime;
 
+				$tr.data('date', boundDateTime);
+				
+				var	isThisMonth = boundDateTime.getMonth() === calendarMonth;
 				$tr.toggleClass('clickable', isThisMonth);
 				$tr.toggleClass('non-clickable', !isThisMonth);
-
-				if (isThisMonth) {
-					$tr.click(function() { 
-						// Weekday clicking should trigger all the same behaviour as calendar clicking. The safest way
-						// (least likely to break when OneTime is updated) is to simulate a calendar click.
-						var dayInCalendar = twoTime.core.getDayInDisplayedCalendar($calendar, calendar, boundDateTime);
-						dayInCalendar.$td.children('a').click();
-
-						// But for reasons unknown the event triggered by the above simulated click has the incorrect srcElement, 
-						// causing calendar highlighting to break. So we'll have to do it manually.
-						if (typeof(HighlightCalendarWeek) !== 'undefined')
-							HighlightCalendarWeek(dayInCalendar.$td);
-					});
-				}
 			});
 		}
 	}
