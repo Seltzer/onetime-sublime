@@ -12,7 +12,7 @@
 
 		// Inject TwoTime scripts
 		inject('core.js');
-		inject('two-time-mod.js');
+		inject('mod.js');
 	});
 
 

@@ -22,7 +22,7 @@
 					$tr.click(function() { 
 						// Weekday clicking should trigger all the same behaviour as calendar clicking. The safest way
 						// (least likely to break when OneTime is updated) is to simulate a calendar click.
-						var dayInCalendar = twoTime.core.getDayInCalendar($calendar, calendar, boundDateTime);
+						var dayInCalendar = twoTime.core.getDayInDisplayedCalendar($calendar, calendar, boundDateTime);
 						dayInCalendar.$td.children('a').click();
 
 						// But for reasons unknown the event triggered by the above simulated click has the incorrect srcElement, 

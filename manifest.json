@@ -3,7 +3,7 @@
 	"content_scripts": [
 		{
 			"matches": ["URLs removed (ask Nathan)"],
-			"css": ["two-time-mod.css"],
+			"css": ["mod.css"],
 			"js": ["two-time-injector.js"]
 		}
 	],
@@ -19,7 +19,7 @@
     "version": "1.0.0",
     "web_accessible_resources": [
 		"core.js",
-		"two-time-mod.js",
+		"mod.js",
 		"lib/underscore-min.js",
 		"lib/underscore-min.map"
     ]
