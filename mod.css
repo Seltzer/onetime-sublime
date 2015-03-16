@@ -44,7 +44,9 @@
 
 
 /*===================================================================================================================================================
- |Calendar styling (should only have effect when one or both of Today Highlighting and Incomplete Day Highlighting are enabled.
+ | Calendar styling (should only have effect when one or both of Today Highlighting and Incomplete Day Highlighting are enabled.
+ |
+ | Quite messy, since we have to deal with many combinations of things. Would read much more nicely if we were using Less.
 ===================================================================================================================================================*/
 /* Incomplete days are to have a red background */
 #cal table > tbody > tr > td.incomplete {
@@ -67,6 +69,13 @@ html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.calend
 html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.calendarWeekRow {
 	background-color: white;
 }
+
+/* Restore orange background for public holidays */
+html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.calendarWeekRow.public-holiday,
+html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.calendarWeekRow.public-holiday {
+	background-color: #FFC455;
+}
+
 
 /* Currently selected date should have a blue border rather than the default OneTime blue background. This means that 
  * we're free to use apply a red background in cases where the current day is incomplete.
@@ -120,7 +129,6 @@ html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.t-stat
 html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.t-state-hover.public-holidays {
 	background-color: #FFC455 !important;
 }
-
 
 /* Apply a green border to 'Today' */
 #cal table > tbody > tr > td.today {
