@@ -165,11 +165,13 @@
 					return;
 
 				// Partition days based on completeness
+				var tomorrow = ots.core.zeroDate(ots.core.addDays(new Date(), 1));
+
 				var partitions = _.chain(augmentedDays)
 					.partition(function(day) {
 						var hoursClocked = day.timesheets.reduce(function(total, ts) { return total + ts.Duration; }, 0);
 
-						return ots.core.isWeekDay(day.date)	&& hoursClocked < showjobsOptions.stdHours;
+						return day.date < tomorrow && ots.core.isWeekDay(day.date) && hoursClocked < showjobsOptions.stdHours;
 					})
 					.map(function(partition) { return _.pluck(partition, '$calendarTd'); })
 					.value();
@@ -197,7 +199,7 @@
 	function addHeader() {
 		// Add OTS header
 		$('<span id="ots-header">' + 
-			'Modded with <a target="_blank" href="https://github.com/Seltzer/onetime-sublime">OneTime Sublime v1.0.0</a>' + 
+			'Modded with OneTime Sublime v1.0.2' + 
 		  '</span>')
 		  .appendTo($('#titleContainer'));
 	}

@@ -35,6 +35,27 @@ ots.core = (function() {
 
 
 		/**
+		 * Non-mutating way to add/subtract days to/from a JS date.
+		 *
+		 * @param daysToAdd Can be negative
+		 */
+		addDays: function(date, daysToAdd) {
+			var returnDate = new Date(date);
+			returnDate.setDate(returnDate.getDate() + daysToAdd);
+
+			return returnDate;
+		},
+
+
+		/**
+		 * Non-mutating way to zero the time component of a JS date.
+		 */
+		zeroDate: function(date) {
+			return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+		},
+
+
+		/**
 		 * Returns nested arrays, where the outer array corresponds to weeks and the inner to days starting with Monday
 		 */
 		getWeeksInDisplayedCalendar: function($calendar, calendar) {

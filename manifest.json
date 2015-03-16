@@ -2,21 +2,23 @@
     "author": "Nathan Pitman",
 	"content_scripts": [
 		{
-			"matches": ["URLs removed (ask Nathan)"],
+			"matches": [
+				"URLs removed (ask Nathan)"
+			],
 			"css": ["mod.css"],
 			"js": ["ots-injector.js"]
 		}
 	],
-    "description": "Enhancements for an internal web-app called OneTime.",
+    "description": "Enhancements for OneTime",
     "manifest_version": 2,
     "minimum_chrome_version": "16",
 	"name": "OneTime Sublime",
 	"options_page": "options/options.html",
-    "permissions": [
+	"permissions": [
 		"storage",
 		"URLs removed (ask Nathan)"
     ],
-    "version": "1.0.0",
+	"version": "1.0.2",
     "web_accessible_resources": [
 		"core.js",
 		"mod.js",

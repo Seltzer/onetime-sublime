@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	todayHighlightingCb.onclick = persistOptions;
 	favsFilteringCb.onclick = persistOptions;
 	weekGridClickingCb.onclick = persistOptions;
-	incompleteDaysHighlightingCb.onclick = persistOptions;
+	incompleteDayHighlightingCb.onclick = persistOptions;
 	
 	function restoreOptions() {
 		chrome.storage.sync.get({
