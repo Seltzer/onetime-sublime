@@ -86,6 +86,11 @@
 
 		// When a tab is selected...
 		$favTab.bind('select', function(event) {
+			// This event seems to fire with no item when you press <SHIFT> + <DEL> / <LEFT> / <RIGHT> in the favourites filter. 
+			// It's unwanted.
+			if (!event.item)
+				return;
+
 			var	tabText = $(event.item).text();
 
 			// Ensure that FF is only displayed for the appropriate tabs			
