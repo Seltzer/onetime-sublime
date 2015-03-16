@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		todayHighlightingCb = document.getElementById('today-highlighting-cb'),
 		favsFilteringCb = document.getElementById('favs-filtering-cb'),
 		weekGridClickingCb = document.getElementById('week-grid-clicking-cb'),
-		incompleteDaysHighlightingCb = document.getElementById('incomplete-days-highlighting-cb');
+		incompleteDayHighlightingCb = document.getElementById('incomplete-day-highlighting-cb');
 
 	restoreOptions();
 
@@ -17,12 +17,12 @@ document.addEventListener('DOMContentLoaded', function() {
 			enableTodayHighlighting: true,
 			enableFavouritesFiltering: true,
 			enableWeekGridClicking: true,
-			enableIncompleteDaysHighlighting: true
+			enableIncompleteDayHighlighting: true
 		}, function (config) {
 			todayHighlightingCb.checked = config.enableTodayHighlighting;
 			favsFilteringCb.checked = config.enableFavouritesFiltering;
 			weekGridClickingCb.checked = config.enableWeekGridClicking;
-			incompleteDaysHighlightingCb.checked = config.enableIncompleteDaysHighlighting;
+			incompleteDayHighlightingCb.checked = config.enableIncompleteDayHighlighting;
 		});
 	}
 
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			enableTodayHighlighting: todayHighlightingCb.checked,
 			enableFavouritesFiltering: favsFilteringCb.checked,
 			enableWeekGridClicking: weekGridClickingCb.checked,
-			enableIncompleteDaysHighlighting: incompleteDaysHighlightingCb.checked
+			enableIncompleteDaysHighlighting: incompleteDayHighlightingCb.checked
 		});
 	}
 });

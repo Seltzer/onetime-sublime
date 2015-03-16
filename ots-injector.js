@@ -4,7 +4,7 @@
 		enableTodayHighlighting: true,
 		enableFavouritesFiltering: true,
 		enableWeekGridClicking: true,
-		enableIncompleteDaysHighlighting: true
+		enableIncompleteDayHighlighting: true
 	};
 	
 	chrome.storage.sync.get(defaultOtsConfig, function (config) {

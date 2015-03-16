@@ -182,12 +182,43 @@
 	}
 
 
-	$(function() {
+	function fixCalendarClasses($calendar, $weekGrid) {
+		$calendar.bind('change navigate', fix);
+		$weekGrid.bind('dataBound', fix);
+		fix();
+
+
+		function fix() {
+			$calendar.find('table tbody tr td > a.t-action-link').each(function() { $(this).parent().addClass('public-holiday'); });
+		}
+	}
+
+
+	function addHeader() {
 		// Add OTS header
 		$('<span id="ots-header">' + 
 			'Modded with <a target="_blank" href="https://github.com/Seltzer/onetime-sublime">OneTime Sublime v1.0.0</a>' + 
 		  '</span>')
 		  .appendTo($('#titleContainer'));
+	}
+
+
+	/**
+	 * Write certain config state as data attributes to DOM. Our CSS relies on them.
+	 */
+	function writeConfigToDom(otsConfig) {
+		var $html = $('html');
+		
+		$html.attr({
+			'data-today-highlighting-enabled': otsConfig.enableTodayHighlighting,
+			'data-incomplete-day-highlighting-enabled': otsConfig.enableIncompleteDayHighlighting
+		});
+	}
+
+
+	$(function() {
+		addHeader();
+	
 
 		// Obtain DOM elements and Telerik components on page
 		var $cal = $('#cal'),
@@ -198,9 +229,13 @@
 
 		var config = $('#ots-config').data('ots-config');
 
+		writeConfigToDom(config);
+
 		if (config.enableFavouritesFiltering)
 			enableFavouritesFiltering($favTab);
-		if (config.enableIncompleteDaysHighlighting)
+		if (config.enableIncompleteDayHighlighting || config.enableTodayHighlighting)
+			fixCalendarClasses($cal, $weekGrid);
+		if (config.enableIncompleteDayHighlighting)
 			enableIncompleteDayHighlighting($cal, cal, $weekGrid);
 		if (config.enableWeekGridClicking)
 			enableWeekGridClicking($cal, cal, $weekGrid, weekGrid);
