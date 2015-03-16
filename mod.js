@@ -118,7 +118,7 @@
 	}
 
 
-	function enableIncompleteDayHighlighting($calendar, calendar, $weekGrid) {
+	function enableIncompleteDayHighlighting($calendar, calendar, $weekGrid, includeFutureDays) {
 		$calendar.bind('navigate change', highlightIncompleteDays);
 		$weekGrid.bind('dataBound', highlightIncompleteDays);
 		highlightIncompleteDays();
@@ -171,7 +171,8 @@
 					.partition(function(day) {
 						var hoursClocked = day.timesheets.reduce(function(total, ts) { return total + ts.Duration; }, 0);
 
-						return day.date < tomorrow && ots.core.isWeekDay(day.date) && hoursClocked < showjobsOptions.stdHours;
+						return (includeFutureDays || day.date < tomorrow)
+							&& ots.core.isWeekDay(day.date) && hoursClocked < showjobsOptions.stdHours;
 					})
 					.map(function(partition) { return _.pluck(partition, '$calendarTd'); })
 					.value();
@@ -199,7 +200,7 @@
 	function addHeader() {
 		// Add OTS header
 		$('<span id="ots-header">' + 
-			'Modded with OneTime Sublime v1.0.2' + 
+			'Modded with OneTime Sublime v1.0.3' + 
 		  '</span>')
 		  .appendTo($('#titleContainer'));
 	}
@@ -238,7 +239,7 @@
 		if (config.enableIncompleteDayHighlighting || config.enableTodayHighlighting)
 			fixCalendarClasses($cal, $weekGrid);
 		if (config.enableIncompleteDayHighlighting)
-			enableIncompleteDayHighlighting($cal, cal, $weekGrid);
+			enableIncompleteDayHighlighting($cal, cal, $weekGrid, config.includeFutureDays);
 		if (config.enableWeekGridClicking)
 			enableWeekGridClicking($cal, cal, $weekGrid, weekGrid);
 		if (config.enableTodayHighlighting)
