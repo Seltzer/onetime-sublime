@@ -205,7 +205,7 @@
 	function addHeader() {
 		// Add OTS header
 		$('<span id="ots-header">' + 
-			'Modded with OneTime Sublime v1.0.3' + 
+			'Modded with OneTime Sublime v1.0.4' + 
 		  '</span>')
 		  .appendTo($('#titleContainer'));
 	}

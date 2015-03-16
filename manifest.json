@@ -18,7 +18,7 @@
 		"storage",
 		"URLs removed (ask Nathan)"
     ],
-	"version": "1.0.3",
+	"version": "1.0.4",
     "web_accessible_resources": [
 		"core.js",
 		"mod.js",
