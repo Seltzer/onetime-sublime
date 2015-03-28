@@ -6,7 +6,8 @@
 		enableWeekGridClicking: true,
 		allowMonthChange: false,
 		enableIncompleteDayHighlighting: true,
-		includeFutureDays: false
+		includeFutureDays: false,
+		enableTableTextWrapping: false
 	};
 	
 	chrome.storage.sync.get(defaultOtsConfig, function (config) {

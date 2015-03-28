@@ -6,8 +6,9 @@ document.addEventListener('DOMContentLoaded', function() {
 		incompleteDayHighlightingCb = document.getElementById('incomplete-day-highlighting-cb'),
 		includeFutureDaysCb = document.getElementById('include-future-days-cb'),
 		allowMonthChangeCb = document.getElementById('allow-month-change-cb'),
-		allCb = [todayHighlightingCb, favsFilteringCb, weekGridClickingCb, 
-			incompleteDayHighlightingCb, includeFutureDaysCb, allowMonthChangeCb];
+		textWrappingCb = document.getElementById('text-wrapping-cb'),
+		allCb = [todayHighlightingCb, favsFilteringCb, weekGridClickingCb, incompleteDayHighlightingCb, 
+				includeFutureDaysCb, allowMonthChangeCb, textWrappingCb];
 
 	restoreOptions();
 
@@ -23,7 +24,8 @@ document.addEventListener('DOMContentLoaded', function() {
 			enableWeekGridClicking: true,
 			enableIncompleteDayHighlighting: true,
 			includeFutureDays: false,
-			allowMonthChange: false
+			allowMonthChange: false,
+			enableTableTextWrapping: false
 		}, function (config) {
 			todayHighlightingCb.checked = config.enableTodayHighlighting;
 			favsFilteringCb.checked = config.enableFavouritesFiltering;
@@ -31,6 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			incompleteDayHighlightingCb.checked = config.enableIncompleteDayHighlighting;
 			includeFutureDaysCb.checked = config.includeFutureDays;
 			allowMonthChangeCb.checked = config.allowMonthChange;
+			textWrappingCb.checked = config.enableTableTextWrapping;
 		});
 	}
 
@@ -42,7 +45,8 @@ document.addEventListener('DOMContentLoaded', function() {
 			enableWeekGridClicking: weekGridClickingCb.checked,
 			enableIncompleteDaysHighlighting: incompleteDayHighlightingCb.checked,
 			includeFutureDays: includeFutureDaysCb.checked,
-			allowMonthChange: allowMonthChangeCb.checked
+			allowMonthChange: allowMonthChangeCb.checked,
+			enableTableTextWrapping: textWrappingCb.checked
 		});
 	}
 });

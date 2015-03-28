@@ -90,16 +90,11 @@
 			.bind('keyup mouseout mousedown search', runFilter);
 
 		// When a tab is selected...
-		$favTab.bind('select', function(event) {
-			// This event seems to fire with no item when you press <SHIFT> + <DEL> / <LEFT> / <RIGHT> in the favourites filter. 
-			// It's unwanted.
-			if (!event.item)
-				return;
-
+		ots.core.oneTime.onFavTabSelected($favTab, function(event) {
 			var	tabText = $(event.item).text();
 
 			// Ensure that FF is only displayed for the appropriate tabs			
-			$li.toggle(contains(tabText, 'personal') || contains(tabText, 'team'));
+			$li.toggle(ots.core.containsSubstring(tabText, 'personal') || ots.core.containsSubstring(tabText, 'team'));
 			
 			// Blank out search box and re-run filter which will make all rows visible
 			$searchBox.val('');
@@ -118,12 +113,8 @@
 
 			rowsOfCurrentTab().each(function() {
 				var $row = $(this);
-				$row.toggle(!text || contains($row.text(), text));
+				$row.toggle(!text || ots.core.containsSubstring($row.text(), text));
 			});
-		};
-
-		function contains(text, substring) {
-			return text.toLowerCase().indexOf(substring.toLowerCase()) !== -1;
 		};
 	}
 
@@ -244,6 +235,38 @@
 	}
 
 
+	/**
+	 * Enables text wrapping in the bodies of tables rendered in the Personal / Team tabs (in Favourites Panel)
+	 * and the timesheet grid.
+	 */
+	function enableTableTextWrapping($favTab, $timesheetGrid) {
+		ots.core.oneTime.onFavTabSelected($favTab, function(event) {
+			var	tabText = $(event.item).text();
+
+			if (ots.core.containsSubstring(tabText, 'personal') || ots.core.containsSubstring(tabText, 'team')) 
+				modifyFavPanel();
+		});
+
+		$timesheetGrid.bind('dataBound', modifyTimesheetGrid);
+
+		modifyFavPanel();
+		modifyTimesheetGrid();
+
+
+		function modifyFavPanel() {
+			modifyTable($favTab.find('.t-content.t-state-active table'));
+		}
+
+		function modifyTimesheetGrid() {
+			modifyTable($timesheetGrid.find('.t-grid-content table'));
+		}
+
+		function modifyTable($table) {
+			$table.find('tbody tr td').each(function() { $(this).css('white-space', 'normal'); });
+		}
+	}
+
+
 	$(function() {
 		var config = $('#ots-config').data('ots-config');
 
@@ -254,7 +277,9 @@
 			cal = $cal.data('tCalendar'),
 			$weekGrid = $('#weekgrid'),
 			weekGrid = $weekGrid.data('tGrid'),
-			$favTab = $('#favTab');
+			$favTab = $('#favTab'),
+			// Huge grid down the bottom which occupies the entire width
+			$timesheetGrid = $('#timesheetgrid');
 
 		writeConfigToDom(config);
 
@@ -271,6 +296,8 @@
 			enableWeekGridClicking($cal, cal, $weekGrid, weekGrid, config.allowMonthChange);
 		if (config.enableTodayHighlighting)
 			enableTodayHighlighting($cal, cal, $weekGrid);
+		if (config.enableTableTextWrapping)
+			enableTableTextWrapping($favTab, $timesheetGrid);
 	});
 
 }(jQuery));

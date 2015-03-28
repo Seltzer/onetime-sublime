@@ -1,9 +1,27 @@
 /**
- * Define ots namespaces
+ * Define ots empty module
  */
 var ots = {
-	core: {}
 };
+
+
+/**
+ * Define ots.core module (but not sub-modules)
+ */
+ots.core = (function() {
+
+	return {
+		/**
+		 * @param caseSensitive - Defaults to false (case insensitive)
+		 */
+		containsSubstring: function(stringToSearch, substring, caseSensitive) {
+			return !!caseSensitive
+				? stringToSearch.indexOf(substring) !== -1
+				: stringToSearch.toLowerCase().indexOf(substring.toLowerCase()) !== -1;
+		}
+	};
+}());
+
 
 
 /**
@@ -75,6 +93,26 @@ ots.core.dates = (function() {
 ots.core.oneTime = (function() {
 	
 	return {
+		/**
+		 * Call this to subscribe to the event of a Favourites tab being selected.
+		 *
+		 * TODO: Should probably trigger our own event instead, rather than requiring that this function be called.
+		 */
+		onFavTabSelected: function($favTab, handler) {
+			if (!$favTab)
+				throw 'Must specify $favTab';
+			
+			$favTab.bind('select', function(event) {
+				// This event seems to fire with no item when you press <SHIFT> + <DEL> / <LEFT> / <RIGHT> in the favourites filter. 
+				// It's unwanted.
+				if (!event.item)
+					return;
+				
+				handler(event);
+			});
+		},
+
+
 		/**
 		 * Returns nested arrays, where the outer array corresponds to weeks and the inner to days starting with Monday
 		 */
