@@ -23,6 +23,7 @@
 		"core.js",
 		"mod.js",
 		"lib/underscore-min.js",
-		"lib/underscore-min.map"
+		"lib/underscore-min.map",
+		"options/options.html"
     ]
 }

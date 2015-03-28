@@ -202,12 +202,27 @@
 	}
 
 
-	function addHeader() {
+	function addHeader(optionsUrl) {
+		var $titleContainer = $('#titleContainer');
+
+		// Remove 'Nathan Pitman -' portion. Slightly tricky, as it doesn't reside inside its own element.
+		$titleContainer.find('#headingText').parent()
+			.contents()
+			.filter(function() {
+				return this.nodeType === 3 && $(this).nextAll('#headingText').length;
+			})
+			.remove();
+
 		// Add OTS header
 		$('<span id="ots-header">' + 
-			'Modded with OneTime Sublime v1.0.4' + 
+			'Modded with OneTime Sublime v1.0.4 ' +
+			'<span>' + 
+				'( <a href="' + optionsUrl + '" target="_blank">options</a> / ' + 
+				'<a href="https://github.com/Seltzer/onetime-sublime" target="_blank">docs</a> / ' + 
+				'<a href="https://github.com/Seltzer/onetime-sublime/issues" target="_blank">support</a> )' + 
+			'</span>' + 
 		  '</span>')
-		  .appendTo($('#titleContainer'));
+		  .appendTo($titleContainer);
 	}
 
 
@@ -225,8 +240,9 @@
 
 
 	$(function() {
-		addHeader();
-	
+		var config = $('#ots-config').data('ots-config');
+
+		addHeader(config.optionsUrl);
 
 		// Obtain DOM elements and Telerik components on page
 		var $cal = $('#cal'),
@@ -234,8 +250,6 @@
 			$weekGrid = $('#weekgrid'),
 			weekGrid = $weekGrid.data('tGrid'),
 			$favTab = $('#favTab');
-
-		var config = $('#ots-config').data('ots-config');
 
 		writeConfigToDom(config);
 

@@ -19,17 +19,20 @@
 	float: right;
 	font-size: 0.7em;
 	line-height: 25px;
+	margin-left: 20px;
 	margin-right: 20px;
 }
 
-#ots-header > a {
-	font-weight: bold;
+#ots-header > span {
+	font-size: 0.8em;
+	margin-left: 8px;
+	color: black;
 }
 
-@media screen and (max-width: 1400px) {
-	#ots-header {
-		display: none;
-	}
+#ots-header > span > a {
+	/* This is readable across all themes */
+	font-weight: bold;
+	color: #000099;
 }
 
 

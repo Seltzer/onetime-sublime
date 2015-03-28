@@ -10,6 +10,8 @@
 	
 	chrome.storage.sync.get(defaultOtsConfig, function (config) {
 		// Inject div whose purpose is to communicate extension config to below injected JS.
+		config.optionsUrl = chrome.extension.getURL('options/options.html');
+
 		var configDiv = document.createElement('div');
 		configDiv.id = "ots-config";
 		configDiv.setAttribute('data-ots-config', JSON.stringify(config));
