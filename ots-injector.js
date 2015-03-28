@@ -4,6 +4,7 @@
 		enableTodayHighlighting: true,
 		enableFavouritesFiltering: true,
 		enableWeekGridClicking: true,
+		allowMonthChange: false,
 		enableIncompleteDayHighlighting: true,
 		includeFutureDays: false
 	};

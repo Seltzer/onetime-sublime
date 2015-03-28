@@ -6,7 +6,7 @@
 	 *   - Non-clickable days (those outside the displayed month) are displayed in grey.
 	 *   - Clicking a weekday should trigger an update to various OneTime panes as if it were a calendar click
 	 */
-	function enableWeekGridClicking($calendar, calendar, $weekGrid, weekGrid) {
+	function enableWeekGridClicking($calendar, calendar, $weekGrid, weekGrid, allowMonthChange) {
 		$calendar.bind('navigate', updateWeekGridClickability);
 		$weekGrid.bind('dataBound', updateWeekGridClickability);
 		updateWeekGridClickability();
@@ -15,14 +15,23 @@
 		$weekGrid.delegate('table:eq(1) > tbody > tr', 'click', function() {
 			var $tr = $(this),
 				date = $tr.data('date');
-			
+
 			if ($tr.hasClass('clickable')) {
+				// We might need to change calendar month
+				if (allowMonthChange) {
+					var offset = date.getMonth() - calendar.viewedMonth.toDate().getMonth();
+					if (offset > 0)
+						calendar.navigateToFuture();
+					else if (offset < 0)
+						calendar.navigateToPast();
+				}
+
 				// If we want to emulate calendar behaviour, the safest way (least likely to break when OneTime is updated)
 				// is to simulate a calendar click.
 				var dayInCalendar = ots.core.getDayInDisplayedCalendar($calendar, calendar, date);
 
 				// This shouldn't happen.
-				if (!dayInCalendar)
+				if (!dayInCalendar) 
 					return;
 
 				dayInCalendar.$td.children('a').click();
@@ -44,9 +53,9 @@
 
 				$tr.data('date', boundDateTime);
 				
-				var	isThisMonth = boundDateTime.getMonth() === calendarMonth;
-				$tr.toggleClass('clickable', isThisMonth);
-				$tr.toggleClass('non-clickable', !isThisMonth);
+				var makeClickable = allowMonthChange || boundDateTime.getMonth() === calendarMonth;
+				$tr.toggleClass('clickable', makeClickable);
+				$tr.toggleClass('non-clickable', !makeClickable);
 			});
 		}
 	}
@@ -260,7 +269,7 @@
 		if (config.enableIncompleteDayHighlighting)
 			enableIncompleteDayHighlighting($cal, cal, $weekGrid, config.includeFutureDays);
 		if (config.enableWeekGridClicking)
-			enableWeekGridClicking($cal, cal, $weekGrid, weekGrid);
+			enableWeekGridClicking($cal, cal, $weekGrid, weekGrid, config.allowMonthChange);
 		if (config.enableTodayHighlighting)
 			enableTodayHighlighting($cal, cal, $weekGrid);
 	});
