@@ -2,7 +2,7 @@
 	
 	/**
 	 * The weekday clicking feature is intended to emulate the OneTime calendar clicking functionality in that:
-	 *   - Clicking on a day will never result in the month changing
+	 *   - Clicking on a day will never result in the month changing (unless enabled via options)
 	 *   - Non-clickable days (those outside the displayed month) are displayed in grey.
 	 *   - Clicking a weekday should trigger an update to various OneTime panes as if it were a calendar click
 	 */
@@ -62,13 +62,7 @@
 
 	
 	function enableTodayHighlighting($calendar, calendar, $weekGrid) {
-		$calendar
-			.bind('change', highlightToday)
-			.bind('navigate', function() {
-				// TODO: Massive hack. Find better way of figuring out when animation is complete
-				setTimeout(highlightToday, 500);
-			});
-		//$calendar.bind('navigate change', highlightToday);
+		$calendar.bind('navigate change', highlightToday);
 
 		$weekGrid.bind('dataBound', highlightToday);
 		highlightToday();
@@ -261,6 +255,9 @@
 			$favTab = $('#favTab');
 
 		writeConfigToDom(config);
+
+		// Disable calendar animation. It looks nicer and saves us from trying to detect when it has finished.
+		cal.stopAnimation = true;
 
 		if (config.enableFavouritesFiltering)
 			enableFavouritesFiltering($favTab);
