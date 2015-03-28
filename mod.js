@@ -1,4 +1,6 @@
 (function($) {
+	var weekGridDayRowSelector = 'table:eq(1) > tbody > tr';
+
 	
 	/**
 	 * The weekday clicking feature is intended to emulate the OneTime calendar clicking functionality in that:
@@ -12,7 +14,7 @@
 		updateWeekGridClickability();
 
 
-		$weekGrid.delegate('table:eq(1) > tbody > tr', 'click', function() {
+		$weekGrid.delegate(weekGridDayRowSelector, 'click', function() {
 			var $tr = $(this),
 				date = $tr.data('date');
 
@@ -28,7 +30,7 @@
 
 				// If we want to emulate calendar behaviour, the safest way (least likely to break when OneTime is updated)
 				// is to simulate a calendar click.
-				var dayInCalendar = ots.core.getDayInDisplayedCalendar($calendar, calendar, date);
+				var dayInCalendar = ots.core.oneTime.getDayInDisplayedCalendar($calendar, calendar, date);
 
 				// This shouldn't happen.
 				if (!dayInCalendar) 
@@ -47,7 +49,7 @@
 		function updateWeekGridClickability() {
 			var calendarMonth = calendar.viewedMonth.month();
 
-			$weekGrid.find('table:eq(1) > tbody > tr').each(function() {
+			$weekGrid.find(weekGridDayRowSelector).each(function() {
 				var $tr = $(this),
 					boundDateTime = weekGrid.data[$tr.index()].weekDateTime;
 
@@ -69,7 +71,7 @@
 
 
 		function highlightToday() {
-			var today = ots.core.getDayInDisplayedCalendar($calendar, calendar, ots.core.getDateNow());
+			var today = ots.core.oneTime.getDayInDisplayedCalendar($calendar, calendar, ots.core.dates.getDateNow());
 			if (today)
 				today.$td.addClass('today');								
 		}
@@ -134,15 +136,15 @@
 
 		function highlightIncompleteDays() {
 			// Fetch a representation of the weeks currently displayed in the calendar. We'll be working with these
-			var weeksInCalendar = ots.core.getWeeksInDisplayedCalendar($calendar, calendar);
+			var weeksInCalendar = ots.core.oneTime.getWeeksInDisplayedCalendar($calendar, calendar);
 
 			// We're going to fetch three months of timesheets, guaranteed to cover the displayed month
 			var firstDayOfDisplayedMonth = calendar.viewedMonth.toDate(),
-				firstDayOfPreviousMonth = ots.core.addMonths(firstDayOfDisplayedMonth, -1),
-				firstDayOfNextMonth = ots.core.addMonths(firstDayOfDisplayedMonth, 1);
+				firstDayOfPreviousMonth = ots.core.dates.addMonths(firstDayOfDisplayedMonth, -1),
+				firstDayOfNextMonth = ots.core.dates.addMonths(firstDayOfDisplayedMonth, 1);
 
 			// Fetch timesheets, correlate with week representation, process.
-			ots.core.getMonthsOfTimesheets(firstDayOfPreviousMonth, firstDayOfNextMonth)
+			ots.core.oneTime.getMonthsOfTimesheets(firstDayOfPreviousMonth, firstDayOfNextMonth)
 				.done(function(timesheets) {
 					_.each(weeksInCalendar, function(week) {
 						processWeek(timesheets, week);
@@ -173,14 +175,14 @@
 					return;
 
 				// Partition days based on completeness
-				var tomorrow = ots.core.zeroDate(ots.core.addDays(new Date(), 1));
+				var tomorrow = ots.core.dates.zeroDate(ots.core.dates.addDays(new Date(), 1));
 
 				var partitions = _.chain(augmentedDays)
 					.partition(function(day) {
 						var hoursClocked = day.timesheets.reduce(function(total, ts) { return total + ts.Duration; }, 0);
 
 						return (includeFutureDays || day.date < tomorrow)
-							&& ots.core.isWeekDay(day.date) && hoursClocked < showjobsOptions.stdHours;
+							&& ots.core.dates.isWeekDay(day.date) && hoursClocked < showjobsOptions.stdHours;
 					})
 					.map(function(partition) { return _.pluck(partition, '$calendarTd'); })
 					.value();

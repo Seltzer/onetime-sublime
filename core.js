@@ -1,12 +1,16 @@
-var ots = {};
+/**
+ * Define ots namespaces
+ */
+var ots = {
+	core: {}
+};
+
 
 /**
- * Contains:
- *   - JS utility functions... mostly date related because the JS date API is terribad.
- *   - Useful OneTime specific things
+ * Define ots.core.dates module - contains generic JS date helpers for the most part.
  */
-ots.core = (function() {
-
+ots.core.dates = (function() {
+	
 	return {
 		/**
 		 * This exists for testing purposes.
@@ -18,6 +22,12 @@ ots.core = (function() {
 		
 		isWeekDay: function(date) {
 			return !!(date.getDay() % 6);
+		},
+
+		
+		areSameDay: function(date1, date2) {
+			return date1.getFullYear() === date2.getFullYear() && date1.getMonth() === date2.getMonth()
+				&& date1.getDate() === date2.getDate();
 		},
 
 		
@@ -52,9 +62,19 @@ ots.core = (function() {
 		 */
 		zeroDate: function(date) {
 			return new Date(date.getFullYear(), date.getMonth(), date.getDate());
-		},
+		}
+	};
+}());
 
 
+
+
+/**
+ * Define ots.core.oneTime module - contains helpers which work with the OneTime DOM
+ */
+ots.core.oneTime = (function() {
+	
+	return {
 		/**
 		 * Returns nested arrays, where the outer array corresponds to weeks and the inner to days starting with Monday
 		 */
@@ -95,14 +115,11 @@ ots.core = (function() {
 		 * @returns An object like that returned by getWeeksInDisplayedCalendar
 		 */
 		getDayInDisplayedCalendar: function($calendar, calendar, date) {
-			var weeksInDisplayedCalendar = ots.core.getWeeksInDisplayedCalendar($calendar, calendar);
+			var weeksInDisplayedCalendar = ots.core.oneTime.getWeeksInDisplayedCalendar($calendar, calendar);
 
 			return _.chain(weeksInDisplayedCalendar)
 				.flatten()
-				.find(function(day) { 
-					return day.date.getFullYear() === date.getFullYear() && day.date.getMonth() === date.getMonth() 
-						&& day.date.getDate() === date.getDate();
-				})
+				.find(function(day) { return ots.core.dates.areSameDay(day.date, date); })
 				.value();
 		},
 
@@ -115,7 +132,7 @@ ots.core = (function() {
 		 */
 		getMonthsOfTimesheets: function(from, to) {
 			// Prepare
-			to = to || ots.core.getDateNow();
+			to = to || ots.core.dates.getDateNow();
 			if (from > to)
 				throw 'from must be <= to';
 

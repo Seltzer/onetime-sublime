@@ -1,5 +1,5 @@
 /*===================================================================================================================================================
- |Week grid styling
+ | Week grid styling
 ===================================================================================================================================================*/
 #weekgrid table > tbody > tr.clickable,
 #weekgrid table > tbody > tr.clickable * {
@@ -13,7 +13,7 @@
 
 
 /*===================================================================================================================================================
- |Header styling
+ | Header styling
 ===================================================================================================================================================*/
 #ots-header {
 	float: right;
@@ -37,7 +37,7 @@
 
 
 /*===================================================================================================================================================
- |Favourites panel styling
+ | Favourites panel styling
 ===================================================================================================================================================*/
 #favGrid ul > li.favourites-filter {
     float: right;
@@ -85,6 +85,7 @@ html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > 
  */
 html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.calendarWeekRow.t-state-selected,
 html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.calendarWeekRow.t-state-selected {
+    font-weight: bold;
 	background-color: white !important;
 	/* Preferring this to border because it doesn't occupy space */
     -webkit-box-shadow: inset 0 0 0 2px #A9DCF5;
