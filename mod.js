@@ -72,6 +72,9 @@
 
 		function highlightToday() {
 			var today = ots.core.oneTime.getDayInDisplayedCalendar($calendar, calendar, ots.core.dates.getDateNow());
+
+			$calendar.find('.t-content tbody tr td.today').not(today ? today.$td : []).removeClass('today');
+
 			if (today)
 				today.$td.addClass('today');								
 		}
@@ -186,6 +189,9 @@
 	}
 
 
+	/**
+	 * Our CSS relies on public holidays being addressable. Hence this.
+	 */
 	function fixCalendarClasses($calendar, $weekGrid) {
 		$calendar.bind('change navigate', fix);
 		$weekGrid.bind('dataBound', fix);
@@ -281,24 +287,35 @@
 			// Huge grid down the bottom which occupies the entire width
 			$timesheetGrid = $('#timesheetgrid');
 
+		// Some of our CSS is conditional based on config. So we'll persist it to the DOM as data attributes
 		writeConfigToDom(config);
 
 		// Disable calendar animation. It looks nicer and saves us from trying to detect when it has finished.
 		cal.stopAnimation = true;
 
+
+		// Activate features based on config
+
 		if (config.enableFavouritesFiltering)
 			enableFavouritesFiltering($favTab);
-		if (config.enableIncompleteDayHighlighting || config.enableTodayHighlighting)
+
+		if (config.enableIncompleteDayHighlighting || config.enableTodayHighlighting) {
+			// If we're doing any sort of day highlighting, we need to fix the classes on the calendar so that
+			// public holidays are marked.
 			fixCalendarClasses($cal, $weekGrid);
-		if (config.enableIncompleteDayHighlighting)
-			enableIncompleteDayHighlighting($cal, cal, $weekGrid, config.includeFutureDays);
+
+			if (config.enableIncompleteDayHighlighting)
+				enableIncompleteDayHighlighting($cal, cal, $weekGrid, config.includeFutureDays);
+
+			if (config.enableTodayHighlighting)
+				enableTodayHighlighting($cal, cal, $weekGrid);
+		}
+
 		if (config.enableWeekGridClicking)
 			enableWeekGridClicking($cal, cal, $weekGrid, weekGrid, config.allowMonthChange);
-		if (config.enableTodayHighlighting)
-			enableTodayHighlighting($cal, cal, $weekGrid);
+
 		if (config.enableTableTextWrapping)
 			enableTableTextWrapping($favTab, $timesheetGrid);
 	});
 
 }(jQuery));
-
