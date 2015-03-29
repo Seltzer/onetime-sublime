@@ -1,12 +1,12 @@
 (function() {
 	// TODO: This is duplicated elsewhere. Annoying.
 	var defaultOtsConfig = {
-		enableTodayHighlighting: true,
 		enableFavouritesFiltering: true,
 		enableWeekGridClicking: true,
 		allowMonthChange: false,
 		enableIncompleteDayHighlighting: true,
 		includeFutureDays: false,
+		enableTodayHighlighting: true,
 		enableTableTextWrapping: false
 	};
 	
