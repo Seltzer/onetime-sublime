@@ -31,8 +31,10 @@
 
 	function inject(jsPath) {
 		var script = document.createElement('script');
-		script.setAttribute('type', 'text/javascript');
-		script.setAttribute('src', chrome.extension.getURL(jsPath));
+		script.type = 'text/javascript';
+		script.src = chrome.extension.getURL(jsPath);
+		script.async = false;
+
 		document.body.appendChild(script);
 	}
 }());
