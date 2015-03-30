@@ -12,6 +12,24 @@
 	};
 	
 	chrome.storage.sync.get(defaultOtsConfig, function (config) {
+		// This config defaulting is duplicated elsewhere. Annoying.
+		if (config.enableFavouritesFiltering === null)
+			config.enableFavouritesFiltering = true;
+		if (config.enableWeekGridClicking === null)
+			config.enableWeekGridClicking = true;
+		if (config.allowMonthChange === null)
+			config.allowMonthChange = false;
+		if (config.enableFindIncompleteButton === null)
+			config.enableFindIncompleteButton = true;
+		if (config.enableIncompleteDayHighlighting === null)
+			config.enableIncompleteDayHighlighting = true;
+		if (config.includeFutureDays === null)
+			config.includeFutureDays = false;
+		if (config.enableTodayHighlighting === null)
+			config.enableTodayHighlighting = true;
+		if (config.enableTableTextWrapping === null)
+			config.enableTableTextWrapping = false;
+			
 		// Inject div whose purpose is to communicate extension config to below injected JS.
 		config.optionsUrl = chrome.extension.getURL('options/options.html');
 

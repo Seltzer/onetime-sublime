@@ -1,6 +1,6 @@
 ## Changelog
-
-- **v2.0 (30/3/15)**  
+	
+- **v2.2 (30/3/15)**  
     * Added 'Find Incomplete Day' button
     * Added option to week grid clicking to allow the month to change
     * Added table text wrapping functionality
