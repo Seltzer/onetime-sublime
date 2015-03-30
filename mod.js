@@ -18,31 +18,8 @@
 			var $tr = $(this),
 				date = $tr.data('date');
 
-			if ($tr.hasClass('clickable')) {
-				// We might need to change calendar month
-				if (allowMonthChange) {
-					var offset = date.getMonth() - calendar.viewedMonth.toDate().getMonth();
-					if (offset > 0)
-						calendar.navigateToFuture();
-					else if (offset < 0)
-						calendar.navigateToPast();
-				}
-
-				// If we want to emulate calendar behaviour, the safest way (least likely to break when OneTime is updated)
-				// is to simulate a calendar click.
-				var dayInCalendar = ots.core.oneTime.getDayInDisplayedCalendar($calendar, calendar, date);
-
-				// This shouldn't happen.
-				if (!dayInCalendar) 
-					return;
-
-				dayInCalendar.$td.children('a').click();
-
-				// But for reasons unknown the event triggered by the above simulated click has the incorrect srcElement, 
-				// causing calendar highlighting to break. So we'll have to do it manually.
-				if (typeof(HighlightCalendarWeek) !== 'undefined')
-					HighlightCalendarWeek(dayInCalendar.$td);
-			}
+			if ($tr.hasClass('clickable')) 
+				ots.core.oneTime.selectDayInCalendar($calendar, calendar, date, allowMonthChange);
 		});
 
 		
@@ -65,8 +42,8 @@
 	
 	function enableTodayHighlighting($calendar, calendar, $weekGrid) {
 		$calendar.bind('navigate change', highlightToday);
-
 		$weekGrid.bind('dataBound', highlightToday);
+
 		highlightToday();
 
 
@@ -122,6 +99,10 @@
 	}
 
 
+	/**
+	 * Days are marked as being incomplete if their week is incomplete and they don't satisfy the daily quota.
+	 * Future days are optionally included.
+	 */
 	function enableIncompleteDayHighlighting($calendar, calendar, $weekGrid, includeFutureDays) {
 		$calendar.bind('navigate change', highlightIncompleteDays);
 		$weekGrid.bind('dataBound', highlightIncompleteDays);
@@ -130,60 +111,51 @@
 
 		function highlightIncompleteDays() {
 			// Fetch a representation of the weeks currently displayed in the calendar. We'll be working with these
-			var weeksInCalendar = ots.core.oneTime.getWeeksInDisplayedCalendar($calendar, calendar);
+			var weeksInCalendar = ots.core.oneTime.getWeeksInDisplayedCalendar($calendar, calendar),
+				firstWeek = _.first(weeksInCalendar)[0].date,
+				lastWeek = _.last(weeksInCalendar)[0].date,
+				tomorrow = ots.core.dates.zeroDate(ots.core.dates.addDays(ots.core.dates.getDateNow(), 1));
 
-			// We're going to fetch three months of timesheets, guaranteed to cover the displayed month
-			var firstDayOfDisplayedMonth = calendar.viewedMonth.toDate(),
-				firstDayOfPreviousMonth = ots.core.dates.addMonths(firstDayOfDisplayedMonth, -1),
-				firstDayOfNextMonth = ots.core.dates.addMonths(firstDayOfDisplayedMonth, 1);
-
-			// Fetch timesheets, correlate with week representation, process.
-			ots.core.oneTime.getMonthsOfTimesheets(firstDayOfPreviousMonth, firstDayOfNextMonth)
-				.done(function(timesheets) {
-					_.each(weeksInCalendar, function(week) {
-						processWeek(timesheets, week);
-					});
+			// Fetch timesheets correspond to above weeks
+			ots.core.oneTime.getWeeksOfTimesheets(firstWeek, lastWeek)
+				.done(function(weeksOfTimesheets) {
+					// Zip weeks in calendar against weeks of timesheets and process each individually
+					_.chain(weeksInCalendar)
+						.zip(weeksOfTimesheets)
+						.map(function(week) {
+							return {
+								weekOfTimesheets: week[1],
+								$dayTds: _.map(week[0], '$td')
+							};
+						})
+						.each(processWeek);
 				});
 
 
-			function processWeek(timesheets, week) {
-				// Attach timesheet info to days from above
-				var augmentedDays = _.map(week, function(day) {
-					return {
-						date: day.date,
-						$calendarTd: day.$td,
-						timesheets: timesheets[day.date] || []
-					};
-				});
-
-				// Compute total hours for week - this has a bearing on whether we mark individual days as incomplete
-				var totalHours = _.chain(augmentedDays)
-					.pluck('timesheets')
-					.flatten()
-					.reduce(function(total, ts) { return total + ts.Duration; }, 0)
-					.value();
-
-				// If user has clocked more than the standard weekly quota, to be consistent with OneTime,
-				// we shan't mark any days as incomplete.
-				if (totalHours >= showjobsOptions.stdHoursPerWeek)
-					return;
-
-				// Partition days based on completeness
-				var tomorrow = ots.core.dates.zeroDate(ots.core.dates.addDays(new Date(), 1));
-
-				var partitions = _.chain(augmentedDays)
-					.partition(function(day) {
-						var hoursClocked = day.timesheets.reduce(function(total, ts) { return total + ts.Duration; }, 0);
-
-						return (includeFutureDays || day.date < tomorrow)
-							&& ots.core.dates.isWeekDay(day.date) && hoursClocked < showjobsOptions.stdHours;
-					})
-					.map(function(partition) { return _.pluck(partition, '$calendarTd'); })
-					.value();
-
-				// Mark as complete/incomplete accordingly
-				_.each(partitions[0], function($incompleteDayTd) { $incompleteDayTd.addClass('incomplete'); });
-				_.each(partitions[1], function($completeDayTd) { $completeDayTd.removeClass('incomplete'); });
+			function processWeek(week) {
+				if (!week.weekOfTimesheets.isIncomplete) {
+					// If week is complete, we can safely mark all of its days as complete
+					$(weeksInCalendar).removeClass('incomplete');
+				} else {
+					// Otherwise, we must zip days of timesheets against days in the calendar
+					// and process each day individually.
+					_.chain(week.$dayTds)
+						.zip(week.weekOfTimesheets.days)
+						.map(function(day) {
+							return {
+								date: day[1].date,
+								isIncomplete: day[1].isIncomplete,
+								$td: day[0]
+							};
+						})
+						.filter(function(day) {
+							return includeFutureDays || day.date < tomorrow;
+						})
+						.each(function(day) {
+							day.$td.toggleClass('incomplete', day.isIncomplete);
+						})
+						.value();
+				}
 			}
 		}
 	}
@@ -273,12 +245,20 @@
 	}
 
 
+	/**
+	 * Activates the 'Find Incomplete Day' button. Behaviour:
+	 *     - The first time it is pressed, jump to the first incomplete day in the last few months
+	 *     - Subsequent presses should cycle through other incomplete days
+	 *     - When the user fills in any timesheet data, we mark our incompleteness state is invalid / stale and retrieve
+	 *       some more. We try to set the pointer to be temporally close to where it previously resided.
+	 */
 	function enableFindIncompleteDay($calendar, calendar) {
 		// Keep track of incomplete days and maintain a pointer to the current one
 		var	incompleteDays = null,
 			index = null,
 			dateAtIndex = null;
 
+		// Eagerly fetch data so that there's no delay upon first press
 		getIncompleteDaysAndSetPointer();
 
 		$('#saveBtn, #copyTimesheetBtn span, #deleteTimesheetBtn span').click(function() {
@@ -292,16 +272,11 @@
 				if (incompleteDays === null) {
 					getIncompleteDaysAndSetPointer()
 						.done(function() {
-							if (incompleteDays.length) {
-								navigateToDay(incompleteDays[index].date);
-								index = (index + 1) % incompleteDays.length;
-								dateAtIndex = incompleteDays[index].date;
-							}
+							if (incompleteDays.length) 
+								selectDayAndIncrementPointer();
 						});
-				} else if (incompleteDays.length > 1) {
-					navigateToDay(incompleteDays[index].date);
-					index = (index + 1) % incompleteDays.length;
-					dateAtIndex = incompleteDays[index].date;
+				} else if (incompleteDays.length) {
+					selectDayAndIncrementPointer();
 				}
 			});
 
@@ -309,7 +284,6 @@
 		function getIncompleteDaysAndSetPointer() {
 			var	
 				today = ots.core.dates.zeroDate(ots.core.dates.getDateNow()),
-				// Start approximately three months ago
 				start = ots.core.dates.getWeekStart(ots.core.dates.addMonths(today, -3)),
 				end = ots.core.dates.getWeekStart(today);
 
@@ -318,7 +292,7 @@
 					incompleteDays = _.chain(weeks)
 						.map(function(week) { return week.days; })
 						.flatten()
-						.filter(function(day) { return day.isIncomplete; })
+						.filter(function(day) { return day.isIncomplete && day.date <= today; })
 						.value();
 
 					if (dateAtIndex) {
@@ -341,29 +315,11 @@
 				});
 		}
 
-
-		function navigateToDay(day) {
-			var calendarMonth = calendar.viewedMonth.toDate(),
-				monthOffset = day.getMonth() - calendarMonth.getMonth();
-
-			if (monthOffset !== 0)
-				calendar.navigateHorizontally(0, ots.core.dates.getMonthStart(day), monthOffset > 0);
-
-			// If we want to emulate calendar behaviour, the safest way (least likely to break when OneTime is updated)
-			// is to simulate a calendar click.
-			var dayInCalendar = ots.core.oneTime.getDayInDisplayedCalendar($calendar, calendar, day);
-
-			// This shouldn't happen.
-			if (!dayInCalendar) 
-				return;
-
-			dayInCalendar.$td.children('a').click();
-
-			// But for reasons unknown the event triggered by the above simulated click has the incorrect srcElement, 
-			// causing calendar highlighting to break. So we'll have to do it manually.
-			if (typeof(HighlightCalendarWeek) !== 'undefined')
-				HighlightCalendarWeek(dayInCalendar.$td);
-
+		
+		function selectDayAndIncrementPointer() {
+			ots.core.oneTime.selectDayInCalendar($calendar, calendar, incompleteDays[index].date);
+			index = (index + 1) % incompleteDays.length;
+			dateAtIndex = incompleteDays[index].date;
 		}
 	}
 

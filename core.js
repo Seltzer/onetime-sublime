@@ -159,6 +159,35 @@ ots.core.oneTime = (function() {
 			});
 		},
 
+		
+		selectDayInCalendar: function($calendar, calendar, day, allowMonthChange) {
+			var calendarMonth = calendar.viewedMonth.toDate(),
+				monthOffset = day.getMonth() - calendarMonth.getMonth();
+
+			if (monthOffset !== 0) {
+				if (!allowMonthChange)
+					return;
+			
+				calendar.navigateHorizontally(0, ots.core.dates.getMonthStart(day), monthOffset > 0);
+			}
+
+
+			// If we want to emulate calendar behaviour, the safest way (least likely to break when OneTime is updated)
+			// is to simulate a calendar click.
+			var dayInCalendar = ots.core.oneTime.getDayInDisplayedCalendar($calendar, calendar, day);
+
+			// This shouldn't happen.
+			if (!dayInCalendar) 
+				return;
+
+			dayInCalendar.$td.children('a').click();
+
+			// But for reasons unknown the event triggered by the above simulated click has the incorrect srcElement, 
+			// causing calendar highlighting to break. So we'll have to do it manually.
+			if (typeof(HighlightCalendarWeek) !== 'undefined')
+				HighlightCalendarWeek(dayInCalendar.$td);
+		},
+
 
 		/**
 		 * Returns nested arrays, where the outer array corresponds to weeks and the inner to days starting with Monday
@@ -210,64 +239,10 @@ ots.core.oneTime = (function() {
 
 
 		/**
-		 * Gets months of timesheets between specified dates. Returns a promise.
-		 * 
-		 * @returns A promise, whose value is an object where the keys are JS dates (with year/month/day and zeroed time), 
-		 * and the values are arrays of timesheets returned via the OneTime API
+		 * Fetches timesheets between the specified dates in units of weeks
+		 *
+		 * @return Array of week objects (see below for structure)
 		 */
-		getMonthsOfTimesheets: function(from, to) {
-			// Prepare
-			to = to || ots.core.dates.getDateNow();
-			if (from > to)
-				throw 'from must be <= to';
-
-			// Compute monthStarts, an array of dates corresponding to the starts of months of timesheets we want to retrieve
-			var firstMonth = new Date(from.getFullYear(), from.getMonth()),
-				lastMonth = new Date(to.getFullYear(), to.getMonth());
-
-			var monthStarts = [],
-				date = new Date(firstMonth);
-			
-			// Apology: this is slightly nasty and could be more nicely expressed if Underscore JS had an unfold function
-			do {
-				monthStarts.push(date);
-				date = new Date(date);
-				date.setMonth(date.getMonth() + 1);
-			} while (date <= lastMonth);
-			
-			// For each month to retrieve, call the OneTime API
-			var deferredResults = _.map(monthStarts, getTimesheetData);
-
-			// When all calls resolve...
-			return $.when.apply($, deferredResults)
-				.pipe(function () {
-					// Aggregate and flatten timesheets received from n calls, then group them by a real JS date, not the stringly typed
-					// date we received from the API
-					var timesheets = _.chain(arguments)
-						.map(function (result) { return result[0].data; })
-						.flatten()
-						.groupBy(function(entry) {
-							var dateComponents = entry.Date.split('/');
-							return new Date(dateComponents[2], dateComponents[1] - 1, dateComponents[0]);
-						})
-						.value();
-
-					return $.Deferred().resolve(timesheets);
-				});
-
-
-			// Helper for obtaining timesheet data
-			function getTimesheetData(date) {
-				var dateString = $.telerik.formatString('{0:MM/dd/yyyy}', date);
-
-				var url = '/Home/_selectdate?date='	+ $.URLEncode(dateString) + '&UserName=' + showjobsOptions.userName
-					+ '&viewType=' + 'View%20Month';
-
-				return $.post(url, {});
-			}
-		},
-
-
 		getWeeksOfTimesheets: function(start, end) {
 			// Prepare
 			end = end || ots.core.dates.getDateNow();
@@ -316,6 +291,7 @@ ots.core.oneTime = (function() {
 				 
 							return {
 								week: week,
+								isIncomplete: !weekIsComplete,
 								days: _.chain(daysOfWeek)
 									.zip(hours)
 									.map(function(x) {

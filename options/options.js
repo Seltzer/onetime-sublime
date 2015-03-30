@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			initCheckbox(favsFilteringCb, config.enableFavouritesFiltering, true);
 			initCheckbox(weekGridClickingCb, config.enableWeekGridClicking, true);
 			initCheckbox(allowMonthChangeCb, config.allowMonthChange, false);
-			initCheckbox(findIncompleteCb, config.enableFindIncompleteDay, true);
+			initCheckbox(findIncompleteCb, config.enableFindIncompleteButton, true);
 			initCheckbox(incompleteDayHighlightingCb, config.enableIncompleteDayHighlighting, true);
 			initCheckbox(includeFutureDaysCb, config.includeFutureDays, false);			
 			initCheckbox(todayHighlightingCb, config.enableTodayHighlighting, true);
