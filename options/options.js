@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		favsFilteringCb = document.getElementById('favs-filtering-cb'),
 		weekGridClickingCb = document.getElementById('week-grid-clicking-cb'),
 		allowMonthChangeCb = document.getElementById('allow-month-change-cb'),
+		findIncompleteCb = document.getElementById('find-incomplete-cb'),
 		incompleteDayHighlightingCb = document.getElementById('incomplete-day-highlighting-cb'),
 		includeFutureDaysCb = document.getElementById('include-future-days-cb'),
 		todayHighlightingCb = document.getElementById('today-highlighting-cb'),
@@ -28,6 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			enableFavouritesFiltering: null,
 			enableWeekGridClicking: null,
 			allowMonthChange: null,
+			enableFindIncompleteButton: null,
 			enableIncompleteDayHighlighting: null,
 			includeFutureDays: null,
 			enableTodayHighlighting: null,
@@ -37,6 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			initCheckbox(favsFilteringCb, config.enableFavouritesFiltering, true);
 			initCheckbox(weekGridClickingCb, config.enableWeekGridClicking, true);
 			initCheckbox(allowMonthChangeCb, config.allowMonthChange, false);
+			initCheckbox(findIncompleteCb, config.enableFindIncompleteDay, true);
 			initCheckbox(incompleteDayHighlightingCb, config.enableIncompleteDayHighlighting, true);
 			initCheckbox(includeFutureDaysCb, config.includeFutureDays, false);			
 			initCheckbox(todayHighlightingCb, config.enableTodayHighlighting, true);
@@ -61,6 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			enableFavouritesFiltering: getActualValue(favsFilteringCb),
 			enableWeekGridClicking: getActualValue(weekGridClickingCb),
 			allowMonthChange: getActualValue(allowMonthChangeCb),
+			enableFindIncompleteButton: getActualValue(findIncompleteCb),
 			enableIncompleteDayHighlighting: getActualValue(incompleteDayHighlightingCb),
 			includeFutureDays: getActualValue(includeFutureDaysCb),
 			enableTodayHighlighting: getActualValue(todayHighlightingCb),

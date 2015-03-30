@@ -4,6 +4,7 @@
 		enableFavouritesFiltering: true,
 		enableWeekGridClicking: true,
 		allowMonthChange: false,
+		enableFindIncompleteButton: true,
 		enableIncompleteDayHighlighting: true,
 		includeFutureDays: false,
 		enableTodayHighlighting: true,

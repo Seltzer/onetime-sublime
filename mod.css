@@ -47,6 +47,14 @@
 
 
 /*===================================================================================================================================================
+ | Find incomplete day button
+===================================================================================================================================================*/
+#find-incomplete-day {
+	margin-left: 3px;
+}
+
+
+/*===================================================================================================================================================
  | Calendar styling (should only have effect when one or both of Today Highlighting and Incomplete Day Highlighting are enabled.
  |
  | Quite messy, since we have to deal with many combinations of things. Would read much more nicely if we were using Less.

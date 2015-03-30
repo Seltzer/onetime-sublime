@@ -273,6 +273,102 @@
 	}
 
 
+	function enableFindIncompleteDay($calendar, calendar) {
+		// Keep track of incomplete days and maintain a pointer to the current one
+		var	incompleteDays = null,
+			index = null,
+			dateAtIndex = null;
+
+		getIncompleteDaysAndSetPointer();
+
+		$('#saveBtn, #copyTimesheetBtn span, #deleteTimesheetBtn span').click(function() {
+			// Invalidate incompleteness state
+			incompleteDays = null;
+		});
+
+		$('<button id="find-incomplete-day" class="button">Find incomplete day</button>')
+			.insertAfter($('#today'))
+			.click(function() {
+				if (incompleteDays === null) {
+					getIncompleteDaysAndSetPointer()
+						.done(function() {
+							if (incompleteDays.length) {
+								navigateToDay(incompleteDays[index].date);
+								index = (index + 1) % incompleteDays.length;
+								dateAtIndex = incompleteDays[index].date;
+							}
+						});
+				} else if (incompleteDays.length > 1) {
+					navigateToDay(incompleteDays[index].date);
+					index = (index + 1) % incompleteDays.length;
+					dateAtIndex = incompleteDays[index].date;
+				}
+			});
+
+
+		function getIncompleteDaysAndSetPointer() {
+			var	
+				today = ots.core.dates.zeroDate(ots.core.dates.getDateNow()),
+				// Start approximately three months ago
+				start = ots.core.dates.getWeekStart(ots.core.dates.addMonths(today, -3)),
+				end = ots.core.dates.getWeekStart(today);
+
+			return ots.core.oneTime.getWeeksOfTimesheets(start, end)
+				.pipe(function(weeks) {
+					incompleteDays = _.chain(weeks)
+						.map(function(week) { return week.days; })
+						.flatten()
+						.filter(function(day) { return day.isIncomplete; })
+						.value();
+
+					if (dateAtIndex) {
+						var matchingIndex = _.findIndex(incompleteDays, function(day) {
+							return day.date >= dateAtIndex;
+						});
+
+						if (matchingIndex !== -1) {
+							index = matchingIndex;
+							dateAtIndex = incompleteDays[matchingIndex].date;
+
+							return $.Deferred().resolve();
+						} 
+					}
+					
+					index = 0;
+					dateAtIndex = incompleteDays.length ? incompleteDays[index].date : null;
+
+					return $.Deferred().resolve();
+				});
+		}
+
+
+		function navigateToDay(day) {
+			var calendarMonth = calendar.viewedMonth.toDate(),
+				monthOffset = day.getMonth() - calendarMonth.getMonth();
+
+			if (monthOffset !== 0)
+				calendar.navigateHorizontally(0, ots.core.dates.getMonthStart(day), monthOffset > 0);
+
+			// If we want to emulate calendar behaviour, the safest way (least likely to break when OneTime is updated)
+			// is to simulate a calendar click.
+			var dayInCalendar = ots.core.oneTime.getDayInDisplayedCalendar($calendar, calendar, day);
+
+			// This shouldn't happen.
+			if (!dayInCalendar) 
+				return;
+
+			dayInCalendar.$td.children('a').click();
+
+			// But for reasons unknown the event triggered by the above simulated click has the incorrect srcElement, 
+			// causing calendar highlighting to break. So we'll have to do it manually.
+			if (typeof(HighlightCalendarWeek) !== 'undefined')
+				HighlightCalendarWeek(dayInCalendar.$td);
+
+		}
+	}
+
+
+	// Initialise
 	$(function() {
 		var config = $('#ots-config').data('ots-config');
 
@@ -316,6 +412,10 @@
 
 		if (config.enableTableTextWrapping)
 			enableTableTextWrapping($favTab, $timesheetGrid);
+
+		if (config.enableFindIncompleteButton)
+			enableFindIncompleteDay($cal, cal);
 	});
 
 }(jQuery));
+
