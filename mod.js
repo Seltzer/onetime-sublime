@@ -135,7 +135,7 @@
 			function processWeek(week) {
 				if (!week.weekOfTimesheets.isIncomplete) {
 					// If week is complete, we can safely mark all of its days as complete
-					$(weeksInCalendar).removeClass('incomplete');
+					_.each(week.$dayTds, function($td) { $td.removeClass('incomplete'); });
 				} else {
 					// Otherwise, we must zip days of timesheets against days in the calendar
 					// and process each day individually.
@@ -189,7 +189,7 @@
 
 		// Add OTS header
 		$('<span id="ots-header">' + 
-			'Modded with OneTime Sublime v1.0.4 ' +
+			'Modded with OneTime Sublime v2.0 ' +
 			'<span>' + 
 				'( <a href="' + optionsUrl + '" target="_blank">options</a> / ' + 
 				'<a href="https://github.com/Seltzer/onetime-sublime" target="_blank">docs</a> / ' + 
@@ -317,7 +317,7 @@
 
 		
 		function selectDayAndIncrementPointer() {
-			ots.core.oneTime.selectDayInCalendar($calendar, calendar, incompleteDays[index].date);
+			ots.core.oneTime.selectDayInCalendar($calendar, calendar, incompleteDays[index].date, true);
 			index = (index + 1) % incompleteDays.length;
 			dateAtIndex = incompleteDays[index].date;
 		}
