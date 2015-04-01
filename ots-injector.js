@@ -1,34 +1,6 @@
 (function() {
-	// TODO: This is duplicated elsewhere. Annoying.
-	var defaultOtsConfig = {
-		enableFavouritesFiltering: true,
-		enableWeekGridClicking: true,
-		allowMonthChange: false,
-		enableFindIncompleteButton: true,
-		enableIncompleteDayHighlighting: true,
-		includeFutureDays: false,
-		enableTodayHighlighting: true,
-		enableTableTextWrapping: false
-	};
-	
-	chrome.storage.sync.get(defaultOtsConfig, function (config) {
-		// This config defaulting is duplicated elsewhere. Annoying.
-		if (config.enableFavouritesFiltering === null)
-			config.enableFavouritesFiltering = true;
-		if (config.enableWeekGridClicking === null)
-			config.enableWeekGridClicking = true;
-		if (config.allowMonthChange === null)
-			config.allowMonthChange = false;
-		if (config.enableFindIncompleteButton === null)
-			config.enableFindIncompleteButton = true;
-		if (config.enableIncompleteDayHighlighting === null)
-			config.enableIncompleteDayHighlighting = true;
-		if (config.includeFutureDays === null)
-			config.includeFutureDays = false;
-		if (config.enableTodayHighlighting === null)
-			config.enableTodayHighlighting = true;
-		if (config.enableTableTextWrapping === null)
-			config.enableTableTextWrapping = false;
+	chrome.storage.sync.get(null, function (config) {
+		applyDefaults(config);
 			
 		// Inject div whose purpose is to communicate extension config to below injected JS.
 		config.optionsUrl = chrome.extension.getURL('options/options.html');
@@ -38,7 +10,7 @@
 		configDiv.setAttribute('data-ots-config', JSON.stringify(config));
 		document.body.appendChild(configDiv);
 
-		// Inject Underscore JS
+		// Inject Underscore JS, provided OneTime hasn't already done so.
 		if (typeof(_) === 'undefined')
 			inject('lib/underscore-min.js');
 
@@ -47,6 +19,28 @@
 		inject('mod.js');
 	});
 
+
+	/**
+	 * Mutates the specified config by applying default values for config keys which aren't set.
+	 */
+	function applyDefaults(config) {
+		// TODO: These config defaults exist elsewhere (in options.js). Annoying.
+		apply('enableFavouritesFiltering', true);
+		apply('enableWeekGridClicking', true);
+		apply('allowMonthChange', false);
+		apply('enableFindIncompleteButton', true);
+		apply('enableIncompleteDayHighlighting', true);
+		apply('includeFutureDays', false);
+		apply('enableTodayHighlighting', true);
+		apply('enableTableTextWrapping', false);
+
+		function apply(prop, defaultValue) {
+			// We're deliberately allowing type coercion between null/undefined here.
+			if (config[prop] == null)
+				config[prop] = defaultValue;
+		}
+	}
+	
 
 	function inject(jsPath) {
 		var script = document.createElement('script');

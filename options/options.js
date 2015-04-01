@@ -25,16 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	
 	function restoreOptions() {
-		chrome.storage.sync.get({
-			enableFavouritesFiltering: null,
-			enableWeekGridClicking: null,
-			allowMonthChange: null,
-			enableFindIncompleteButton: null,
-			enableIncompleteDayHighlighting: null,
-			includeFutureDays: null,
-			enableTodayHighlighting: null,
-			enableTableTextWrapping: null
-		}, function (config) {
+		chrome.storage.sync.get(null, function (config) {
 			// TODO: The config defaulting below is duplicated elsewhere. Annoying.
 			initCheckbox(favsFilteringCb, config.enableFavouritesFiltering, true);
 			initCheckbox(weekGridClickingCb, config.enableWeekGridClicking, true);
@@ -52,9 +43,10 @@ document.addEventListener('DOMContentLoaded', function() {
 		 * Initialise checkbox based on nullable bool config
 		 */
 		function initCheckbox(cb, value, defaultValue) {
-			// We expect value to be true/false/null and nothing else. Just in case it isn't, we coerce it to be safe.
-			cb.checked = value !== null ? !!value : defaultValue;
-			cb.setAttribute('data-actual-value', value !== null ? !!value : null);
+			// We expect value to be true/false if it has ever been explicitly set by the user, and 
+			// null/undefined otherwise. Just in case it isn't, we coerce it to bool to be safe.
+			cb.checked = value != null ? !!value : defaultValue;
+			cb.setAttribute('data-actual-value', value != null ? !!value : null);
 		}
 	}
 
