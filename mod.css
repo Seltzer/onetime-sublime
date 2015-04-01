@@ -3,152 +3,128 @@
 ===================================================================================================================================================*/
 #weekgrid table > tbody > tr.clickable,
 #weekgrid table > tbody > tr.clickable * {
-    cursor: pointer;
+  cursor: pointer;
 }
-
 #weekgrid table > tbody > tr.non-clickable,
 #weekgrid table > tbody > tr.non-clickable * {
-	color: gray;
+  color: gray;
 }
-
-
 /*===================================================================================================================================================
  | Header styling
 ===================================================================================================================================================*/
 #ots-header {
-	float: right;
-	font-size: 0.7em;
-	line-height: 25px;
-	margin-left: 20px;
-	margin-right: 20px;
+  float: right;
+  font-size: 0.7em;
+  line-height: 25px;
+  margin-left: 20px;
+  margin-right: 20px;
 }
-
 #ots-header > span {
-	font-size: 0.8em;
-	margin-left: 8px;
-	color: black;
+  font-size: 0.8em;
+  margin-left: 8px;
+  color: black;
 }
-
 #ots-header > span > a {
-	/* This is readable across all themes */
-	font-weight: bold;
-	color: #000099;
+  /* This is readable across all themes */
+  font-weight: bold;
+  color: #000099;
 }
-
-
 /*===================================================================================================================================================
  | Favourites panel styling
 ===================================================================================================================================================*/
 #favGrid ul > li.favourites-filter {
-    float: right;
-    display: inline-block;
-    position: relative;
+  float: right;
+  display: inline-block;
+  position: relative;
 }
-
-
 /*===================================================================================================================================================
  | Find incomplete day button
 ===================================================================================================================================================*/
 #find-incomplete-day {
-	margin-left: 3px;
+  margin-left: 3px;
 }
-
-
 /*===================================================================================================================================================
  | Calendar styling (should only have effect when one or both of Today Highlighting and Incomplete Day Highlighting are enabled.
  |
  | Quite messy, since we have to deal with many combinations of things. Would read much more nicely if we were using Less.
 ===================================================================================================================================================*/
-/* Incomplete days are to have a red background */
-#cal table > tbody > tr > td.incomplete {
-	background-color: #F3737F !important;
+html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td,
+html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td {
+  /* Today */
+  /* Current day */
+  /* Current week / day */
+  /* NB: calendarWeekRow is inconsistently used to indicate the current week. Sometimes t-state-selected exists without calendarWeekRow */
+  /* Hover state */
+  /* Incomplete days */
+  /* Public holidays */
 }
-
-/* OneTime colours the inner anchor of public holidays in orange. We would prefer it to colour the entire td */
-html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td > a.t-action-link,
-html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td > a.t-action-link {
-	background: none;
+html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.today,
+html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.today,
+html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.today.t-state-hover.t-other-month,
+html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.today.t-state-hover.t-other-month {
+  font-weight: bold;
+  /* Preferring this to border because it doesn't occupy space */
+  -webkit-box-shadow: inset 0 0 0 2px green;
+  box-shadow: inset 0 0 0 2px green;
 }
-
-html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.public-holiday,
-html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.public-holiday {
-	background-color: #FFC455;
+html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.t-state-selected,
+html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.t-state-selected {
+  font-weight: bold;
+  /* Apply a blue border. This should trump the green 'Today' border */
 }
-
-/* Remove current week highlighting. It seems unnecessary and gets in the way of incomplete day highlighting */
+html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.t-state-selected,
+html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.t-state-selected,
+html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.t-state-selected.today,
+html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.t-state-selected.today {
+  /* Preferring this to border because it doesn't occupy space */
+  -webkit-box-shadow: inset 0 0 0 2px #a9dcf5;
+  box-shadow: inset 0 0 0 2px #a9dcf5;
+}
 html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.calendarWeekRow,
-html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.calendarWeekRow {
-	background-color: white;
+html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.calendarWeekRow,
+html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.t-state-selected,
+html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.t-state-selected {
+  /* Remove current week/day highlighting. It seems unnecessary and gets in the way of incomplete day highlighting */
+  background-color: white !important;
 }
-
-/* Restore orange background for public holidays */
-html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.calendarWeekRow.public-holiday,
-html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.calendarWeekRow.public-holiday {
-	background-color: #FFC455;
-}
-
-
-/* Currently selected date should have a blue border rather than the default OneTime blue background. This means that 
- * we're free to use apply a red background in cases where the current day is incomplete.
- */
-html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.calendarWeekRow.t-state-selected,
-html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.calendarWeekRow.t-state-selected {
-    font-weight: bold;
-	background-color: white !important;
-	/* Preferring this to border because it doesn't occupy space */
-    -webkit-box-shadow: inset 0 0 0 2px #A9DCF5;
-    box-shadow: inset 0 0 0 2px #A9DCF5;
-}
-
-/* Restore red background for incomplete days */
-html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.calendarWeekRow.t-state-selected.incomplete,
-html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.calendarWeekRow.t-state-selected.incomplete {
-	background-color: #F3737F !important;
-}
-
-/* Restore orange background for public holidays */
-html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.calendarWeekRow.t-state-selected.public-holiday,
-html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.calendarWeekRow.t-state-selected.public-holidays {
-	background-color: #FFC455 !important;
-}
-
-/* OneTime applies a blue background when hovering over days. Let's replace it with a blue border. */
 html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.t-state-hover,
 html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.t-state-hover {
-	background-color: white !important;
-	border: none !important;
-	/* Preferring this to border because it doesn't occupy space */
-    -webkit-box-shadow: inset 0 0 0 2px #A9DCF5 !important;
-    box-shadow: inset 0 0 0 2px #A9DCF5 !important;
+  /* OneTime applies a blue background when hovering over days. Let's remove it and add a blue border instead. */
+  background-color: white !important;
+  border: none !important;
+  /* Preferring this to border because it doesn't occupy space */
+  -webkit-box-shadow: inset 0 0 0 2px #a9dcf5;
+  box-shadow: inset 0 0 0 2px #a9dcf5;
+  /* But disable when hovering over days of other months */
 }
-
-/* But disable when hovering over days of other months */
 html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.t-state-hover.t-other-month,
 html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.t-state-hover.t-other-month {
-	/* Preferring this to border because it doesn't occupy space */
-    -webkit-box-shadow: none !important;
-    box-shadow: none !important;
+  -webkit-box-shadow: none;
+  box-shadow: none;
 }
-
-/* Restore red background for incomplete days */
-html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.t-state-hover.incomplete,
-html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.t-state-hover.incomplete {
-	background-color: #F3737F !important;
+html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.incomplete,
+html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.incomplete,
+html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.incomplete.t-state-selected,
+html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.incomplete.t-state-selected,
+html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.incomplete.t-state-hover,
+html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.incomplete.t-state-hover {
+  background-color: #f3737f !important;
 }
-
-/* Restore orange background for public holidays */
-html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.t-state-hover.public-holiday,
-html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.t-state-hover.public-holidays {
-	background-color: #FFC455 !important;
+html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.public-holiday,
+html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.public-holiday,
+html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.public-holiday.t-state-selected,
+html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.public-holiday.t-state-selected,
+html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.public-holiday.t-state-hover,
+html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.public-holiday.t-state-hover {
+  /* Apply a background to the outer td */
+  background-color: #ffc455 !important;
 }
-
-/* Apply a green border to 'Today' */
-#cal table > tbody > tr > td.today {
-    font-weight: bold;
-	/* Preferring this to border because it doesn't occupy space */
-    -webkit-box-shadow: inset 0 0 0 2px green;
-    box-shadow: inset 0 0 0 2px green;
+html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.public-holiday > a.t-action-link,
+html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.public-holiday > a.t-action-link,
+html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.public-holiday.t-state-selected > a.t-action-link,
+html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.public-holiday.t-state-selected > a.t-action-link,
+html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.public-holiday.t-state-hover > a.t-action-link,
+html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.public-holiday.t-state-hover > a.t-action-link {
+  /* And remove the background OneTime applies to the inner anchor */
+  background: none;
 }
-
-
-

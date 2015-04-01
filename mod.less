@@ -1,0 +1,145 @@
+/*===================================================================================================================================================
+ | Week grid styling
+===================================================================================================================================================*/
+#weekgrid table > tbody > tr {
+	&.clickable,
+	&.clickable * {
+		cursor: pointer;
+	}
+
+	&.non-clickable,
+	&.non-clickable * {
+		color: gray;
+	}
+}
+
+
+/*===================================================================================================================================================
+ | Header styling
+===================================================================================================================================================*/
+#ots-header {
+	float: right;
+	font-size: 0.7em;
+	line-height: 25px;
+	margin-left: 20px;
+	margin-right: 20px;
+
+	> span {
+		font-size: 0.8em;
+		margin-left: 8px;
+		color: black;
+
+		> a {
+			/* This is readable across all themes */
+			font-weight: bold;
+			color: #000099;
+		}
+	}
+}
+
+
+/*===================================================================================================================================================
+ | Favourites panel styling
+===================================================================================================================================================*/
+#favGrid ul > li.favourites-filter {
+    float: right;
+    display: inline-block;
+    position: relative;
+}
+
+
+/*===================================================================================================================================================
+ | Find incomplete day button
+===================================================================================================================================================*/
+#find-incomplete-day {
+	margin-left: 3px;
+}
+
+
+/*===================================================================================================================================================
+ | Calendar styling (should only have effect when one or both of Today Highlighting and Incomplete Day Highlighting are enabled.
+ |
+ | Quite messy, since we have to deal with many combinations of things. Would read much more nicely if we were using Less.
+===================================================================================================================================================*/
+@orange: #FFC455;
+@red: #F3737F;
+@light-blue: #A9DCF5;
+@green: green;
+
+.ots-border(@colour) {
+	/* Preferring this to border because it doesn't occupy space */
+	-webkit-box-shadow: inset 0 0 0 2px @colour;
+	box-shadow: inset 0 0 0 2px @colour;
+}
+
+html[data-today-highlighting-enabled="true"],
+html[data-incomplete-day-highlighting-enabled="true"] {
+	#cal table > tbody > tr > td {
+		/* Today */
+		&.today {
+			&,
+			&.t-state-hover.t-other-month {
+				font-weight: bold;
+				.ots-border(@green);
+			}
+		}
+
+		/* Current day */
+		&.t-state-selected {
+			font-weight: bold;
+
+			/* Apply a blue border. This should trump the green 'Today' border */
+			&,
+			&.today {
+				.ots-border(@light-blue);
+			}
+		}
+
+		/* Current week / day */
+		/* NB: calendarWeekRow is inconsistently used to indicate the current week. Sometimes t-state-selected exists without calendarWeekRow */ 
+		&.calendarWeekRow,
+		&.t-state-selected {
+			/* Remove current week/day highlighting. It seems unnecessary and gets in the way of incomplete day highlighting */
+			background-color: white !important;
+		}
+
+		/* Hover state */
+		&.t-state-hover {
+			/* OneTime applies a blue background when hovering over days. Let's remove it and add a blue border instead. */
+			background-color: white !important;
+			border: none !important;
+			.ots-border (@light-blue);
+
+			/* But disable when hovering over days of other months */
+			&.t-other-month {
+				-webkit-box-shadow: none;
+				box-shadow: none;
+			}
+		}
+
+		/* Incomplete days */
+		&.incomplete {
+			&,
+			&.t-state-selected,
+			&.t-state-hover {
+				background-color: @red !important;
+			}
+		}
+
+		/* Public holidays */
+		&.public-holiday {
+			&,
+			&.t-state-selected,
+			&.t-state-hover {
+				/* Apply a background to the outer td */
+				background-color: @orange !important;
+
+				> a.t-action-link {
+					/* And remove the background OneTime applies to the inner anchor */
+					background: none;
+				}
+			}
+		}
+	}
+}
+
