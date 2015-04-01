@@ -15,8 +15,8 @@
 			inject('lib/underscore-min.js');
 
 		// Inject OTS scripts
-		inject('core.js');
-		inject('mod.js');
+		inject(config.enableDebugMode ? 'core.js' : 'core.min.js');
+		inject(config.enableDebugMode ? 'mod.js' : 'mod.min.js');
 	});
 
 
@@ -33,6 +33,7 @@
 		apply('includeFutureDays', false);
 		apply('enableTodayHighlighting', true);
 		apply('enableTableTextWrapping', false);
+		apply('enableDebugMode', false); 
 
 		function apply(prop, defaultValue) {
 			// We're deliberately allowing type coercion between null/undefined here.

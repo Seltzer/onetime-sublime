@@ -18,10 +18,12 @@
 		"storage",
 		"URLs removed (ask Nathan)"
     ],
-	"version": "2.2",
+	"version": "2.3",
     "web_accessible_resources": [
 		"core.js",
+		"core.min.js",
 		"mod.js",
+		"mod.min.js",
 		"lib/underscore-min.js",
 		"lib/underscore-min.map",
 		"options/options.html"

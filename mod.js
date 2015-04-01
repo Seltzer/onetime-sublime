@@ -189,7 +189,7 @@
 
 		// Add OTS header
 		$('<span id="ots-header">' + 
-			'Modded with OneTime Sublime v2.2 ' +
+			'Modded with OneTime Sublime v2.3 ' +
 			'<span>' + 
 				'( <a href="' + optionsUrl + '" target="_blank">options</a> / ' + 
 				'<a href="https://github.com/Seltzer/onetime-sublime" target="_blank">docs</a> / ' + 

@@ -7,7 +7,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		incompleteDayHighlightingCb = document.getElementById('incomplete-day-highlighting-cb'),
 		includeFutureDaysCb = document.getElementById('include-future-days-cb'),
 		todayHighlightingCb = document.getElementById('today-highlighting-cb'),
-		textWrappingCb = document.getElementById('text-wrapping-cb');
+		textWrappingCb = document.getElementById('text-wrapping-cb'),
+		debugModeCb = document.getElementById('debug-mode-cb');
 
 	// Get config and initialise checkboxes accordingly
 	restoreOptions();
@@ -35,6 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			initCheckbox(includeFutureDaysCb, config.includeFutureDays, false);			
 			initCheckbox(todayHighlightingCb, config.enableTodayHighlighting, true);
 			initCheckbox(textWrappingCb, config.enableTableTextWrapping, false);
+			initCheckbox(debugModeCb, config.enableDebugMode, false);
 		});
 
 		
@@ -60,7 +62,9 @@ document.addEventListener('DOMContentLoaded', function() {
 			enableIncompleteDayHighlighting: getActualValue(incompleteDayHighlightingCb),
 			includeFutureDays: getActualValue(includeFutureDaysCb),
 			enableTodayHighlighting: getActualValue(todayHighlightingCb),
-			enableTableTextWrapping: getActualValue(textWrappingCb)
+			enableTableTextWrapping: getActualValue(textWrappingCb),
+			enableDebugMode: getActualValue(debugModeCb)
+			
 		});
 
 		

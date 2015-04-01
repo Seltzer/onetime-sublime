@@ -1,4 +1,10 @@
 ## Changelog
+
+- **v2.3 (2/4/15)**
+    * Fixed calendar highlighting bugs
+    * Minified JavaScript
+    * Added debug mode to options
+    * Cleaned up options defaulting code.
 	
 - **v2.2 (30/3/15)**  
     * Added 'Find Incomplete Day' button

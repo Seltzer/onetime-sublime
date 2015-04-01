@@ -26,3 +26,7 @@ Text inside the timesheet grid table (at the bottom) and the tables in the Perso
 
 ## Changelog
 Located [here](https://github.com/Seltzer/onetime-sublime/blob/develop/CHANGELOG.md).
+
+
+## Issues / Enhancements
+Located [here](https://github.com/Seltzer/onetime-sublime/issues).
