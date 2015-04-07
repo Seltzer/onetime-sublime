@@ -1,5 +1,10 @@
 ## Changelog
 
+- **v2.4 (8/4/15)**
+    * 'Find Incomplete Day' now respects the 'Include Future Days?' setting.
+    * Fixed 'Incomplete Day Highlighting' bug. Last month in calendar would sometimes never be marked as incomplete.
+    * Fixed week grid highlighting bug which could be triggered by repeatedly hammering 'Find Incomplete Day' and causing a month transition.
+
 - **v2.3 (2/4/15)**
     * Fixed calendar highlighting bugs
     * Minified JavaScript
