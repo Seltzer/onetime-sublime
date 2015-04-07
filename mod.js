@@ -28,7 +28,16 @@
 
 			$weekGrid.find(weekGridDayRowSelector).each(function() {
 				var $tr = $(this),
-					boundDateTime = weekGrid.data[$tr.index()].weekDateTime;
+					dayDatum = weekGrid.data[$tr.index()];
+
+				// This occurs if we rapidly transition between months under certain circumstances (e.g. repeatedly
+				// hammer Find Incomplete). Presumably, this absence of data is a result of the week grid not yet 
+				// being ready. At this stage, we'll simply skip this day - a subsequent invocation will sort it out.
+				// TODO: Better fix for this.
+				if (!dayDatum)
+					return true;				
+
+				var boundDateTime = dayDatum.weekDateTime;
 
 				$tr.data('date', boundDateTime);
 				
