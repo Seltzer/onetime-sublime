@@ -252,7 +252,7 @@
 	 *     - When the user fills in any timesheet data, we mark our incompleteness state is invalid / stale and retrieve
 	 *       some more. We try to set the pointer to be temporally close to where it previously resided.
 	 */
-	function enableFindIncompleteDay($calendar, calendar) {
+	function enableFindIncompleteDay($calendar, calendar, includeFutureDays) {
 		// Keep track of incomplete days and maintain a pointer to the current one
 		var	incompleteDays = null,
 			index = null,
@@ -284,15 +284,17 @@
 		function getIncompleteDaysAndSetPointer() {
 			var	
 				today = ots.core.dates.zeroDate(ots.core.dates.getDateNow()),
-				start = ots.core.dates.getWeekStart(ots.core.dates.addMonths(today, -3)),
-				end = ots.core.dates.getWeekStart(today);
+				start = ots.core.dates.addMonths(today, -3),
+				end = includeFutureDays ? ots.core.dates.addMonths(today, 1) : today,
+				firstMonday = ots.core.dates.getWeekStart(start),
+				lastMonday = ots.core.dates.getWeekStart(end);
 
-			return ots.core.oneTime.getWeeksOfTimesheets(start, end)
+			return ots.core.oneTime.getWeeksOfTimesheets(firstMonday, lastMonday)
 				.pipe(function(weeks) {
 					incompleteDays = _.chain(weeks)
 						.map(function(week) { return week.days; })
 						.flatten()
-						.filter(function(day) { return day.isIncomplete && day.date <= today; })
+						.filter(function(day) { return day.isIncomplete && day.date >= start && day.date <= end; })
 						.value();
 
 					if (dateAtIndex) {
@@ -370,7 +372,7 @@
 			enableTableTextWrapping($favTab, $timesheetGrid);
 
 		if (config.enableFindIncompleteButton)
-			enableFindIncompleteDay($cal, cal);
+			enableFindIncompleteDay($cal, cal, config.includeFutureDays);
 	});
 
 }(jQuery));

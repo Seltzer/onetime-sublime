@@ -249,16 +249,18 @@ ots.core.oneTime = (function() {
 			if (start > end)
 				throw 'start must be <= end';
 
-			// Normalise start/end to weeks
-			start = ots.core.dates.getWeekStart(start);
-			end = ots.core.dates.getWeekStart(end);
-
+			// Figure out which weeks we're interested in
 			var 
-				weeks = ots.core.unfold(start, 
+				firstMonday = ots.core.dates.getWeekStart(start),
+				lastMonday = ots.core.dates.getWeekStart(end),
+				weeks = ots.core.unfold(firstMonday, 
 					 function(week) { return ots.core.dates.addDays(week, 7); },
-					 function(week) { return week <= end; }),
-				firstMonth = ots.core.dates.getMonthStart(start),
-				lastMonth = ots.core.dates.getMonthStart(end),
+					 function(week) { return week <= lastMonday; });
+
+			// Accordingly, in order to cover above range, figure out which months of timesheets we must retrieve
+			var
+				firstMonth = ots.core.dates.getMonthStart(firstMonday),
+				lastMonth = ots.core.dates.getMonthStart(ots.core.dates.addDays(lastMonday, 6)),
 				months = ots.core.unfold(firstMonth, 
 					 function(month) { return ots.core.dates.addMonths(month, 1); },
 					 function(month) { return month <= lastMonth; });
