@@ -196,16 +196,103 @@
 			})
 			.remove();
 
+		// Build HTML for What's New dialog
+		var 
+			listItemsTemplate = _.template(
+				'{{ _.each(data, function (item) { }}' + 
+					'<li {{ if (item.explanation) { }} class="no-bullet" {{ } }}>' +
+						'{{ if (item.explanation) { }}' + 
+							'<details>' + 
+								'<summary> {{= item.description }}</summary>' +
+								'{{= item.explanation }}' +
+							'</details>' +
+						'{{ } else { }}' +
+							'{{= item.description }}' + 
+						'{{ } }}' +
+					'</li>' + 
+				'{{ }) }}', { variable: 'data' }),
+
+			whatsNewTemplate = _.template(
+				'<div class="whats-new-dialog">' + 
+					'<h2>What\'s new in v2?</h2>' + 
+
+					'<h3>Enhancements</h3>' + 
+					'<ul>' + 
+						'{{= listItemsTemplate(enhancements) }}' + 
+					'</ul>' + 
+
+					'<h3>Bugfixes</h3>' + 
+					'<ul>' + 
+						'{{= listItemsTemplate(bugfixes) }}' + 
+					'</ul>' + 
+
+					'<div class="dismiss">' +
+						'<a href="javascript:void(0)">Dismiss</a>' +
+						'<div class="ots-clear"></div>' +
+					'</div>' +
+				'</div>'),
+
+			whatsNewHtml = whatsNewTemplate({
+				enhancements: [
+					{ 
+						description: 'Added \'Find incomplete day\' button.',
+						explanation: 'Allows you to cycle through incomplete days from the past few months and ' +
+							'(optionally) from the upcoming month.'
+					},
+					{ 
+						description: 'Added option to allow week grid clicking to trigger a month change.',
+						explanation: 'Enabled by default.'
+					},
+					{ 
+						description: 'Added option to allow text to wrap in tables.',
+						explanation: 'Disabled by default.'
+					}
+				],
+				bugfixes: [
+					{ description: 'Fixed bug where multiple calendar days would be highlighted as \'Today\' when ' + 
+							'OneTime was left open overnight.' },
+					{ description: 'Fixed bug where days near the end of the month would never be marked as incomplete.' },
+					{ description: 'Fixed calendar highlighting bugs.' },
+					{ description: 'Fixed miscellaneous timing bugs.' }
+				],
+				listItemsTemplate: listItemsTemplate
+			});
+
+		// Render dialog to DOM
+		var $whatsNewDialog = $(whatsNewHtml)
+			.appendTo($('#main'))
+			.hide()
+			.find('.dismiss a')
+			.click($.unblockUI)
+			.end();
+
+
 		// Add OTS header
 		$('<span id="ots-header">' + 
 			'Modded with OneTime Sublime v2.4 ' +
 			'<span>' + 
 				'( <a href="' + optionsUrl + '" target="_blank">options</a> / ' + 
 				'<a href="https://github.com/Seltzer/onetime-sublime" target="_blank">docs</a> / ' + 
-				'<a href="https://github.com/Seltzer/onetime-sublime/issues" target="_blank">support</a> )' + 
+				'<a href="javascript:void(0);" class="whats-new">what\'s new</a> )' + 
 			'</span>' + 
 		  '</span>')
-		  .appendTo($titleContainer);
+			.appendTo($titleContainer)
+			.find('.whats-new')
+			.click(function() {
+				$.blockUI({
+					message: $whatsNewDialog,
+					css: {
+						cursor: 'default',
+						textAlign: 'left',
+						top: '20%'
+					},
+					overlayCSS: {
+						cursor: 'default'
+					}
+				});
+
+				$('.blockOverlay').attr('title','Click to return to OneTime').click($.unblockUI);
+			});
 	}
 
 
@@ -351,6 +438,12 @@
 	// Initialise
 	$(function() {
 		var config = $('#ots-config').data('ots-config');
+
+		_.templateSettings = {
+			evaluate:    /\{\{(.+?)\}\}/g,
+			interpolate: /\{\{=(.+?)\}\}/g,
+			escape:      /\{\{-(.+?)\}\}/g
+		};
 
 		addHeader(config.optionsUrl);
 
