@@ -300,11 +300,24 @@
 
 			return ots.core.oneTime.getWeeksOfTimesheets(firstMonday, lastMonday)
 				.pipe(function(weeks) {
-					incompleteDays = _.chain(weeks)
+					// Get flat list of timesheet days corresponding to specified weeks.
+					var daysInPeriod = _.chain(weeks)
 						.map(function(week) { return week.days; })
 						.flatten()
-						.filter(function(day) { return day.isIncomplete && day.date >= start && day.date <= end; })
+						.filter(function(day) { return day.date >= start && day.date <= end; })
 						.value();
+
+					// Interesting dilemma here regarding new employees. We don't want to jump to dates prior to when
+					// they started, but at the same time we have no way of knowing when they started. We're solving
+					// this edge case by including only incomplete days which follow a non-empty day. Consequences:
+					//    1.) Find Incomplete Day will not work for a new employee until they've filled in a timesheet.
+					//    2.) Employees who go on leave for longer than three months will have a similar issue.
+					//    3.) A contiguous incomplete cluster at the start of three months will be a blind spot.
+					var firstNonEmptyDay = _.findIndex(daysInPeriod, function (day) { return day.hours > 0; });
+					if (firstNonEmptyDay !== -1) 
+						daysInPeriod = _.rest(daysInPeriod, firstNonEmptyDay);
+
+					incompleteDays = _.filter(daysInPeriod, function(day) { return day.isIncomplete; });
 
 					if (dateAtIndex) {
 						var matchingIndex = _.findIndex(incompleteDays, function(day) {

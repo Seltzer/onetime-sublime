@@ -299,6 +299,7 @@ ots.core.oneTime = (function() {
 									.map(function(x) {
 										return {
 											date: x[0],
+											hours: x[1],
 											isIncomplete: !weekIsComplete && ots.core.dates.isWeekDay(x[0]) && x[1] < showjobsOptions.stdHours
 										};
 									})
