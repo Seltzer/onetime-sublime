@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html>
   <head>
 	<title>OneTime Sublime Options</title>
@@ -7,72 +8,93 @@
 	 label.indented {
 	   margin-left: 20px;
 	 }
+
+	 .hidden {
+	   display: none;
+	 }
+
+	 #refresh-prompt {
+	   margin: 20px 0 10px 3px;
+	 }
+
+	 #refresh-prompt > span {
+	   padding: 4px;
+	   border: 1px solid #ccc;
+	   background-color: #d9edf7;
+	 }
 	</style>
   </head>
+
   <body>
 	<h2>OneTime Sublime Options</h2>
 
 	<div>
-	  <label>
+	  <label title="Allows jobs in the Personal / Teams tabs to be filtered">
 		<input type="checkbox" id="favs-filtering-cb" />
 		Enable Favourites filtering?
 	  </label>
 	</div>
 
 	<div>
-	  <label>
+	  <label title="Allows you to click on days in the week grid (below the calendar)">
 		<input type="checkbox" id="week-grid-clicking-cb" />
 		Enable week grid clicking?
 	  </label>
 	</div>
 
 	<div>
-	  <label class="indented">
+	  <label class="indented" title="Disabled by default">
 		<input type="checkbox" id="allow-month-change-cb" />
 		Allow it to trigger a month change?
 	  </label>
 	</div>
 
 	<div>
-	  <label>
+	  <label title="Cycles through incomplete days in the last few months, and optionally, a month into the future">
 		<input type="checkbox" id="find-incomplete-cb" />
 		Enable 'Find Incomplete Day' button
 	  </label>
 	</div>
 
 	<div>
-	  <label>
+	  <label title="Highlights incomplete days in red">
 		<input type="checkbox" id="incomplete-day-highlighting-cb" />
 		Enable calendar highlighting of incomplete days?
 	  </label>
 	</div>
 
 	<div>
-	  <label class="indented">
+	  <label class="indented" title="Disabled by default">
 		<input type="checkbox" id="include-future-days-cb" />
 		Include future days?
 	  </label>
 	</div>
 
 	<div>
-	  <label>
+	  <label title="Highlights 'Today' in the calendar with a green rectangle">
 		<input type="checkbox" id="today-highlighting-cb" />
-		Enable calendar / weekgrid highlighting of today's date?
+		Enable calendar highlighting of today's date?
 	  </label>
 	</div>
 
 	<div>
-	  <label>
+	  <label title="Makes OneTime slightly less pretty but slightly more useful (especially on small screens)">
 		<input type="checkbox" id="text-wrapping-cb" />
 		Enable text wrapping in tables (prevents text being cut off)
 	  </label>
 	</div>
 
 	<div class="dev">
-	  <label>
+	  <label title="Here be dragons!">
 		<input type="checkbox" id="debug-mode-cb" />
 		Enable debug mode (for Nathan's use!)
 	  </label>
+	</div>
+
+	<div id="refresh-prompt" class="hidden">
+	  <span>
+		You must refresh OneTime before updated options will take effect
+	  </span>
 	</div>
 
 	<script src="options.js"></script>

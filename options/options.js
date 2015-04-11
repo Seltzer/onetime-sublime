@@ -8,7 +8,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		includeFutureDaysCb = document.getElementById('include-future-days-cb'),
 		todayHighlightingCb = document.getElementById('today-highlighting-cb'),
 		textWrappingCb = document.getElementById('text-wrapping-cb'),
-		debugModeCb = document.getElementById('debug-mode-cb');
+		debugModeCb = document.getElementById('debug-mode-cb'),
+		refreshPrompt = document.getElementById('refresh-prompt');
 
 	// Get config and initialise checkboxes accordingly
 	restoreOptions();
@@ -21,6 +22,8 @@ document.addEventListener('DOMContentLoaded', function() {
 			this.setAttribute('data-actual-value', this.checked);
 
 			persistOptions();
+
+			refreshPrompt.className = "";
 		};
 
 

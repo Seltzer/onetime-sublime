@@ -18,7 +18,7 @@ The calendar entry for the current date is emboldened and given a green border. 
 OneTime already highlights incomplete days in the Week Grid in red. Now they're highlighted in the calendar too, giving you a quick overview of days needing to be filled in. By default, future days aren't highlighted, but this can be overridden in the options.
 
 - **'Find Incomplete Day' button**  
-Clicking this selects the first incomplete incomplete day in the last few months. Subsequent clicks will cycle through the other incomplete days.
+Allows you to cycle through incomplete days from the past few months and from the upcoming month (if future day highlighting is enabled in the options).
 
 - **Text wrapping in tables**  
 Text inside the timesheet grid table (at the bottom) and the tables in the Personal / Team tabs (Favourites Panel) does not wrap by default, and instead is truncated prematurely. Truncation looks nicer aesthetically but is annoying when you want to see hidden text, and is exacerbated on smaller screens. Text wrapping is disabled by default.
