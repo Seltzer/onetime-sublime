@@ -288,6 +288,8 @@
 			.appendTo($titleContainer)
 			.find('.whats-new')
 			.click(function() {
+				ots.core.analytics.record('whats-new');
+
 				$.blockUI({
 					message: $whatsNewDialog,
 					css: {
@@ -358,6 +360,8 @@
 	 *       some more. We try to set the pointer to be temporally close to where it previously resided.
 	 */
 	function enableFindIncompleteDay($calendar, calendar, includeFutureDays) {
+		var numClicks = 0;
+
 		// Keep track of incomplete days and maintain a pointer to the current one
 		var	incompleteDays = null,
 			index = null,
@@ -374,6 +378,9 @@
 		$('<button id="find-incomplete-day" class="button">Find incomplete day</button>')
 			.insertAfter($('#today'))
 			.click(function() {
+				if (++numClicks < 3 || numClicks % 10 === 0) 
+					ots.core.analytics.record('find-incomplete', { n: numClicks });
+
 				if (incompleteDays === null) {
 					getIncompleteDaysAndSetPointer()
 						.done(function() {
@@ -455,6 +462,7 @@
 		};
 
 		addHeader(config.optionsUrl);
+		ots.core.analytics.initialise();
 
 		// Obtain DOM elements and Telerik components on page
 		var $cal = $('#cal'),

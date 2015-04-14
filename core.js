@@ -331,3 +331,75 @@ ots.core.oneTime = (function() {
 	};
 
 }());
+
+
+
+
+/**
+ * Define ots.core.analytics module
+ */
+ots.core.analytics = (function() {
+	var
+		enabled = false,
+		$analytics,
+		session,
+		uid,
+		scrambleShift = 13;
+
+
+	function scramble(str) {
+		var result = "";
+		
+		for (var i = 0; i < str.length; i++) {
+			var c = str.charCodeAt(i);
+			if (c >= 65 && c <=  90) 
+				result += String.fromCharCode((c - 65 + scrambleShift) % 26 + 65);
+			else if (c >= 97 && c <= 122) 
+				result += String.fromCharCode((c - 97 + scrambleShift) % 26 + 97);
+			else
+                result += str.charAt(i);
+		}
+
+		return result.split('').reverse().join('');
+	}
+	
+
+
+
+	return {
+		initialise: function() {
+			if (document.location.protocol === 'https:')
+				return;
+
+			enabled = true;
+			
+			$analytics = $('<div id="ots-analytics"></div>').appendTo($('body'));
+
+			session = new Date().getTime();
+			uid = scramble(showjobsOptions.userName);
+
+			ots.core.analytics.record('load');
+		},
+
+
+		record: function(type, data) {
+			if (!enabled)
+				return;
+		
+			data = data || {};
+			data.ts = new Date().getTime();
+			data.s = session;
+			data.u = uid;
+			data.type = type;
+		
+			var qs = _.chain(data)
+				.map(function(v, k) { return $.URLEncode(k) + '=' + $.URLEncode(v); })
+				.reduce(function(str, qsPair, i) { return str + (i === 0 ? '?' : '&') + qsPair; }, '')
+				.value();
+
+			var url = 'http://thesoftwarecondition.com/spi.gif' + qs;
+
+			$analytics.html('<img src="' + url + '"></img>');
+		}
+	};
+}());
