@@ -1,5 +1,14 @@
 ## Changelog
 
+- **v2.5 (14/4/15)**
+    * Added What's New link to header
+    * Made options page more user friendly
+    * Made OTS header responsive to prevent it being pushed downwards at low resolutions
+    * Fixed bug triggered by changing calendar view type
+    * Reduced number of AJAX calls triggered by incomplete day highlighting
+    * Improved behaviour of 'Find Incomplete Day' for new employees
+    * Added analytics
+        
 - **v2.4 (8/4/15)**
     * 'Find Incomplete Day' now respects the 'Include Future Days?' setting.
     * Fixed 'Incomplete Day Highlighting' bug. Last month in calendar would sometimes never be marked as incomplete.
@@ -23,7 +32,7 @@
     * Disable OneTime calendar month change animation. This makes everything much easier.
 		
 - **v1.0.4 (17/3/15)**  
-Fixed Favourites Filtering bug where FF textbox disappears when pressing SHIFT + DEL / LEFT / RIGHT
+    * Favourites Filtering bug where FF textbox disappears when pressing SHIFT + DEL / LEFT / RIGHT
 	
 - **v1.0.3 (16/3/15)**  
-Initial release with week grid clicking, favourites filtering, incomplete day highlighting, and today highlighting.
+    * Initial release with week grid clicking, favourites filtering, incomplete day highlighting, and today highlighting.

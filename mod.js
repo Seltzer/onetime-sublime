@@ -262,7 +262,8 @@
 							'OneTime was left open overnight.' },
 					{ description: 'Fixed bug where days near the end of the month would never be marked as incomplete.' },
 					{ description: 'Fixed calendar highlighting bugs.' },
-					{ description: 'Fixed miscellaneous timing bugs.' }
+					{ description: 'Fixed miscellaneous timing bugs.' },
+					{ description: 'Fixed errors triggered by changing calendar view type.' }
 				],
 				listItemsTemplate: listItemsTemplate
 			});
@@ -278,7 +279,7 @@
 
 		// Add OTS header
 		$('<span id="ots-header">' + 
-			'<span id="modded-with">Modded with </span>OneTime Sublime v2.4 ' +
+			'<span id="modded-with">Modded with </span>OneTime Sublime v2.5 ' +
 			'<span class="links">' + 
 				'( <a href="' + optionsUrl + '" target="_blank">options</a> / ' + 
 				'<a href="https://github.com/Seltzer/onetime-sublime" target="_blank">docs</a> / ' + 
