@@ -34,7 +34,7 @@
 	margin-left: 20px;
 	margin-right: 20px;
 
-	> span {
+	> span.links {
 		font-size: 0.8em;
 		margin-left: 8px;
 		color: black;
@@ -45,7 +45,15 @@
 			color: #000099;
 		}
 	}
+
+	@media screen and (max-width: 1400px) {
+		> #modded-with {
+			display: none;
+		}
+	}
 }
+
+
 
 .whats-new-dialog {
 	padding: 10px;
@@ -53,6 +61,14 @@
 	ul li.no-bullet {
 		list-style-type: none;
 		margin-left: -18px;
+	}
+
+	details summary {
+		outline: none;
+
+		&:hover {
+			cursor: pointer;
+		}
 	}
 
 	.dismiss {

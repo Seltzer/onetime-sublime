@@ -196,6 +196,10 @@
 			})
 			.remove();
 
+		$titleContainer.find('#helpFileBtn, ul.t-widget > li').width(95);
+//		$titleContainer.find('#helpFileBtn').width(80);
+
+
 		// Build HTML for What's New dialog
 		var 
 			listItemsTemplate = _.template(
@@ -269,8 +273,8 @@
 
 		// Add OTS header
 		$('<span id="ots-header">' + 
-			'Modded with OneTime Sublime v2.4 ' +
-			'<span>' + 
+			'<span id="modded-with">Modded with </span>OneTime Sublime v2.4 ' +
+			'<span class="links">' + 
 				'( <a href="' + optionsUrl + '" target="_blank">options</a> / ' + 
 				'<a href="https://github.com/Seltzer/onetime-sublime" target="_blank">docs</a> / ' + 
 				'<a href="javascript:void(0);" class="whats-new">what\'s new</a> )' + 
