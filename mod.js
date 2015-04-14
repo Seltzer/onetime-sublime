@@ -57,6 +57,9 @@
 
 
 		function highlightToday() {
+			if (!ots.core.oneTime.calendarIsInStandardMode(calendar))
+				return;
+
 			var today = ots.core.oneTime.getDayInDisplayedCalendar($calendar, calendar, ots.core.dates.getDateNow());
 
 			$calendar.find('.t-content tbody tr td.today').not(today ? today.$td : []).removeClass('today');
@@ -119,6 +122,9 @@
 
 
 		function highlightIncompleteDays() {
+			if (!ots.core.oneTime.calendarIsInStandardMode(calendar))
+				return;
+
 			// Fetch a representation of the weeks currently displayed in the calendar. We'll be working with these
 			var weeksInCalendar = ots.core.oneTime.getWeeksInDisplayedCalendar($calendar, calendar),
 				firstWeek = _.first(weeksInCalendar)[0].date,
@@ -196,9 +202,8 @@
 			})
 			.remove();
 
-		$titleContainer.find('#helpFileBtn, ul.t-widget > li').width(95);
-//		$titleContainer.find('#helpFileBtn').width(80);
-
+		// Make header menus and Help button a bit more narrow - they're occupying valuable real estate.
+		$titleContainer.find('#helpFileBtn, ul.t-widget > li').width(97);
 
 		// Build HTML for What's New dialog
 		var 

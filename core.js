@@ -140,6 +140,11 @@ ots.core.dates = (function() {
 ots.core.oneTime = (function() {
 	
 	return {
+		calendarIsInStandardMode: function(calendar) {
+			return calendar.currentView.index === 0;
+		},
+
+
 		/**
 		 * Call this to subscribe to the event of a Favourites tab being selected.
 		 *
