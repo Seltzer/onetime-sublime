@@ -322,7 +322,7 @@ ots.core.oneTime = (function() {
 				var dateString = $.telerik.formatString('{0:MM/dd/yyyy}', date);
 
 				var url = '/Home/_selectdate?date='	+ $.URLEncode(dateString) + '&UserName=' + showjobsOptions.userName
-					+ '&viewType=' + 'View%20Month';
+					+ '&viewType=' + 'View%20Month' + '&ots';
 
 				return $.post(url, {});
 			}

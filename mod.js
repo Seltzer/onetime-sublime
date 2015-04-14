@@ -116,7 +116,7 @@
 	 * Future days are optionally included.
 	 */
 	function enableIncompleteDayHighlighting($calendar, calendar, $weekGrid, includeFutureDays) {
-		$calendar.bind('navigate change', highlightIncompleteDays);
+		$calendar.bind('navigate', highlightIncompleteDays);
 		$weekGrid.bind('dataBound', highlightIncompleteDays);
 		highlightIncompleteDays();
 
