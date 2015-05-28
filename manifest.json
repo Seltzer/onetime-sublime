@@ -19,7 +19,7 @@
 		"storage",
 		"URLs removed (ask Nathan)"
     ],
-	"version": "2.5",
+	"version": "2.6",
     "web_accessible_resources": [
 		"core.js",
 		"core.min.js",

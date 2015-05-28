@@ -1,5 +1,9 @@
 ## Changelog
 
+	
+- **v2.6 (28/5/15)**
+    * Fix analytics bug
+
 - **v2.5 (14/4/15)**
     * Added What's New link to header
     * Made options page more user friendly
