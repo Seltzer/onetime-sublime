@@ -83,8 +83,6 @@
 }
 /*=================================================================================================
  | Calendar styling (should only have effect when one or both of Today Highlighting and Incomplete Day Highlighting are enabled.
- |
- | Quite messy, since we have to deal with many combinations of things. Would read much more nicely if we were using Less.
 ==================================================================================================*/
 html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td,
 html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td {
@@ -93,7 +91,8 @@ html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > 
   /* Current week / day */
   /* NB: calendarWeekRow is inconsistently used to indicate the current week. Sometimes t-state-selected exists without calendarWeekRow */
   /* Hover state */
-  /* Incomplete days */
+  /* Blank days */
+  /* Partially complete days */
   /* Public holidays */
 }
 html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.today,
@@ -102,8 +101,8 @@ html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.today.
 html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.today.t-state-hover.t-other-month {
   font-weight: bold;
   /* Preferring this to border because it doesn't occupy space */
-  -webkit-box-shadow: inset 0 0 0 2px #008000;
-  box-shadow: inset 0 0 0 2px #008000;
+  -webkit-box-shadow: inset 0 0 0 2px green;
+  box-shadow: inset 0 0 0 2px green;
 }
 html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.t-state-selected,
 html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.t-state-selected {
@@ -140,13 +139,21 @@ html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > 
   -webkit-box-shadow: none;
   box-shadow: none;
 }
-html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.incomplete,
-html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.incomplete,
-html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.incomplete.t-state-selected,
-html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.incomplete.t-state-selected,
-html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.incomplete.t-state-hover,
-html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.incomplete.t-state-hover {
+html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.blank,
+html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.blank,
+html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.blank.t-state-selected,
+html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.blank.t-state-selected,
+html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.blank.t-state-hover,
+html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.blank.t-state-hover {
   background-color: #f3737f !important;
+}
+html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.partially-complete,
+html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.partially-complete,
+html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.partially-complete.t-state-selected,
+html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.partially-complete.t-state-selected,
+html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.partially-complete.t-state-hover,
+html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.partially-complete.t-state-hover {
+  background-color: #f3aab1 !important;
 }
 html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.public-holiday,
 html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.public-holiday,

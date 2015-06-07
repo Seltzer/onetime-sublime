@@ -1,6 +1,9 @@
 ## Changelog
 
-	
+
+- **v2.7 (7/6/15)**
+    * Partially complete days are now highlighted differently to blank days
+    
 - **v2.6 (28/5/15)**
     * Fix analytics bug
 

@@ -161,8 +161,6 @@
 						return includeFutureDays || day.date < tomorrow;
 					})
 					.each(function(day) {
-						console.log('for day ' + day.$td.text());
-						console.log('completeness = ' + day.completeness);
 						day.$td
 							.toggleClass('blank', day.completeness === ots.core.TimesheetCompleteness.Blank)
 							.toggleClass('partially-complete', day.completeness === ots.core.TimesheetCompleteness.PartiallyComplete)
@@ -254,6 +252,10 @@
 					{ 
 						description: 'Added option to allow text to wrap in tables.',
 						explanation: 'Disabled by default.'
+					},
+					{ 
+						description: 'Improved incomplete day highlighting.',
+						explanation: 'Partially complete days are now highlighted differently to blank days.'
 					}
 				],
 				bugfixes: [
@@ -278,7 +280,7 @@
 
 		// Add OTS header
 		$('<span id="ots-header">' + 
-			'<span id="modded-with">Modded with </span>OneTime Sublime v2.6 ' +
+			'<span id="modded-with">Modded with </span>OneTime Sublime v2.7 ' +
 			'<span class="links">' + 
 				'( <a href="' + optionsUrl + '" target="_blank">options</a> / ' + 
 				'<a href="https://github.com/Seltzer/onetime-sublime" target="_blank">docs</a> / ' + 
