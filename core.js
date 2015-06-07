@@ -12,6 +12,25 @@ ots.core = (function() {
 
 	return {
 		/**
+		 * ots.core.TimesheetCompleteness enum
+		 *
+		 * Represents completeness of a day with respect to OneTime standard quotas. By default, these
+		 * are 7.5h for weekdays and 0h for weekends. Accounts for week completeness.
+		 */
+		TimesheetCompleteness: {
+			Blank: 'blank',
+			
+			// The day is not blank and the week is incomplete
+			PartiallyComplete: 'partially-complete',
+			
+			// The day and/or its week are complete
+			Complete: 'complete',
+			
+			Exceeded: 'exceeded'
+		},
+
+		
+		/**
 		 * @param caseSensitive - Defaults to false (case insensitive)
 		 */
 		containsSubstring: function(stringToSearch, substring, caseSensitive) {
@@ -39,6 +58,21 @@ ots.core = (function() {
 			}
 			
 			return returnValue;
+		},
+
+
+		computeDayCompleteness: function(date, hoursLogged, weekIsComplete) {
+			var dailyQuota = ots.core.dates.isWeekDay(date) ? showjobsOptions.stdHours : 0;
+			
+			if (hoursLogged > dailyQuota)
+				return ots.core.TimesheetCompleteness.Exceeded;
+
+			if (weekIsComplete || hoursLogged === dailyQuota)
+				return ots.core.TimesheetCompleteness.Complete;
+
+			return hoursLogged > 0
+				? ots.core.TimesheetCompleteness.PartiallyComplete
+				: ots.core.TimesheetCompleteness.Blank;
 		}
 	};
 }());
@@ -135,7 +169,7 @@ ots.core.dates = (function() {
 
 
 /**
- * Define ots.core.oneTime module - contains helpers which work with the OneTime DOM
+ * Define ots.core.oneTime module - contains helpers which work with the OneTime DOM and call its API
  */
 ots.core.oneTime = (function() {
 	
@@ -305,7 +339,7 @@ ots.core.oneTime = (function() {
 										return {
 											date: x[0],
 											hours: x[1],
-											isIncomplete: !weekIsComplete && ots.core.dates.isWeekDay(x[0]) && x[1] < showjobsOptions.stdHours
+											completeness: ots.core.computeDayCompleteness(x[0], x[1], weekIsComplete)
 										};
 									})
 									.value()
@@ -326,10 +360,8 @@ ots.core.oneTime = (function() {
 
 				return $.post(url, {});
 			}
-
 		}
 	};
-
 }());
 
 

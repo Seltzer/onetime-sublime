@@ -148,29 +148,28 @@
 
 
 			function processWeek(week) {
-				if (!week.weekOfTimesheets.isIncomplete) {
-					// If week is complete, we can safely mark all of its days as complete
-					_.each(week.$dayTds, function($td) { $td.removeClass('incomplete'); });
-				} else {
-					// Otherwise, we must zip days of timesheets against days in the calendar
-					// and process each day individually.
-					_.chain(week.$dayTds)
-						.zip(week.weekOfTimesheets.days)
-						.map(function(day) {
-							return {
-								date: day[1].date,
-								isIncomplete: day[1].isIncomplete,
-								$td: day[0]
-							};
-						})
-						.filter(function(day) {
-							return includeFutureDays || day.date < tomorrow;
-						})
-						.each(function(day) {
-							day.$td.toggleClass('incomplete', day.isIncomplete);
-						})
-						.value();
-				}
+				_.chain(week.$dayTds)
+					.zip(week.weekOfTimesheets.days)
+					.map(function(day) {
+						return {
+							date: day[1].date,
+							completeness: day[1].completeness,
+							$td: day[0]
+						};
+					})
+					.filter(function(day) {
+						return includeFutureDays || day.date < tomorrow;
+					})
+					.each(function(day) {
+						console.log('for day ' + day.$td.text());
+						console.log('completeness = ' + day.completeness);
+						day.$td
+							.toggleClass('blank', day.completeness === ots.core.TimesheetCompleteness.Blank)
+							.toggleClass('partially-complete', day.completeness === ots.core.TimesheetCompleteness.PartiallyComplete)
+							.toggleClass('complete', day.completeness === ots.core.TimesheetCompleteness.Complete)
+							.toggleClass('exceeded', day.completeness === ots.core.TimesheetCompleteness.Exceeded)
+					})
+					.value();
 			}
 		}
 	}
@@ -421,7 +420,10 @@
 					if (firstNonEmptyDay !== -1) 
 						daysInPeriod = _.rest(daysInPeriod, firstNonEmptyDay);
 
-					incompleteDays = _.filter(daysInPeriod, function(day) { return day.isIncomplete; });
+					incompleteDays = _.filter(daysInPeriod, function(day) {
+						return day.completeness === ots.core.TimesheetCompleteness.Blank
+							|| day.completeness === ots.core.TimesheetCompleteness.PartiallyComplete;
+					});
 
 					if (dateAtIndex) {
 						var matchingIndex = _.findIndex(incompleteDays, function(day) {

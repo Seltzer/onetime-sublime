@@ -109,11 +109,10 @@
 
 /*=================================================================================================
  | Calendar styling (should only have effect when one or both of Today Highlighting and Incomplete Day Highlighting are enabled.
- |
- | Quite messy, since we have to deal with many combinations of things. Would read much more nicely if we were using Less.
 ==================================================================================================*/
 @orange: #FFC455;
 @red: #F3737F;
+@light-red: #F3AAB1;
 @light-blue: #A9DCF5;
 @green: green;
 
@@ -168,8 +167,8 @@ html[data-incomplete-day-highlighting-enabled="true"] {
 			}
 		}
 
-		/* Incomplete days */
-		&.incomplete {
+		/* Blank days */
+		&.blank {
 			&,
 			&.t-state-selected,
 			&.t-state-hover {
@@ -177,6 +176,15 @@ html[data-incomplete-day-highlighting-enabled="true"] {
 			}
 		}
 
+		/* Partially complete days */
+		&.partially-complete {
+			&,
+			&.t-state-selected,
+			&.t-state-hover {
+				background-color: @light-red !important;
+			}
+		}
+		
 		/* Public holidays */
 		&.public-holiday {
 			&,
