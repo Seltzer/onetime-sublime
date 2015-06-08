@@ -1,6 +1,8 @@
 ## Changelog
 
-
+- **v2.8 (8/6/15)**
+    * Fix calendar highlighting bug
+    
 - **v2.7 (7/6/15)**
     * Partially complete days are now highlighted differently to blank days
     

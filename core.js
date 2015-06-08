@@ -62,7 +62,7 @@ ots.core = (function() {
 
 
 		computeDayCompleteness: function(date, hoursLogged, weekIsComplete) {
-			var dailyQuota = ots.core.dates.isWeekDay(date) ? showjobsOptions.stdHours : 0;
+			var dailyQuota = ots.core.dates.isWeekDay(date) ? parseFloat(showjobsOptions.stdHours) : 0;
 			
 			if (hoursLogged > dailyQuota)
 				return ots.core.TimesheetCompleteness.Exceeded;
