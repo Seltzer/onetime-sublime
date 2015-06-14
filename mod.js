@@ -299,8 +299,8 @@
 						explanation: 'Disabled by default.'
 					},
 					{ 
-						description: 'Improved incomplete day highlighting.',
-						explanation: 'Partially complete days are now highlighted differently to blank days.'
+						description: 'Improved incomplete day highlighting and Today higlighting.',
+						explanation: 'Partially complete days and over-saturated days are now highlighted differently to blank / complete days respectively. Week grid is now highlighted. Today is now highlighted using large font, rather than a green rectangle.'
 					}
 				],
 				bugfixes: [
@@ -325,7 +325,7 @@
 
 		// Add OTS header
 		$('<span id="ots-header">' + 
-			'<span id="modded-with">Modded with </span>OneTime Sublime v2.8 ' +
+			'<span id="modded-with">Modded with </span>OneTime Sublime v2.9 ' +
 			'<span class="links">' + 
 				'( <a href="' + optionsUrl + '" target="_blank">options</a> / ' + 
 				'<a href="https://github.com/Seltzer/onetime-sublime" target="_blank">docs</a> / ' + 

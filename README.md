@@ -12,10 +12,10 @@ Days in the week grid (below the calendar) are clickable! By default, days which
 Entries in the Personal / Team tabs of the Favourites panel are refined as you type in the filter box. Useful for those of us who log time against many different tasks.
 
 - **Calendar highlighting of today's date**  
-The calendar entry for the current date is emboldened and given a green border. Note that this is distinct from the _currently selected day / week_, which OneTime already highlights in shades of blue.
+The calendar entry for the current date is emboldened and enlarged. Note that this is distinct from the _currently selected day / week_, which OneTime already highlights in shades of blue.
 
-- **Calendar highlighting of incomplete days**   
-OneTime already highlights incomplete days in the Week Grid in red. Now they're highlighted in the calendar too, giving you a quick overview of days needing to be filled in. By default, future days aren't highlighted, but this can be overridden in the options.
+- **Calendar / week grid highlighting of incomplete days**   
+OneTime already highlights incomplete days in the Week Grid in red. Now, public holidays and partially complete and over-complete days are coloured differently to blank and complete days. Days in the calendar are also coloured in a similar fashion, giving you a quick overview of days needing to be filled in. By default, future days aren't highlighted, but this can be overridden in the options.
 
 - **'Find Incomplete Day' button**  
 Allows you to cycle through incomplete days from the past few months and from the upcoming month (if future day highlighting is enabled in the options).

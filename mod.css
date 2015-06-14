@@ -92,9 +92,6 @@
 /*=================================================================================================
  | Incomplete day highlighting - general styling, required below
 ==================================================================================================*/
-/* 74B674 */
-/* 90C590 */
-/* #7DC004 */
 /*=================================================================================================
  | Week grid styling - Incomplete day highlighting
 ==================================================================================================*/
@@ -108,7 +105,7 @@
   background-color: white !important;
 }
 #weekgrid table > tbody > tr.exceeded > td:nth-child(n+3) {
-  background-color: #7dc004 !important;
+  background-color: #eeffe8 !important;
 }
 #weekgrid table > tbody > tr.public-holiday > td:nth-child(n+3) {
   background-color: #ffc455 !important;
@@ -192,7 +189,7 @@ html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.exceed
 html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.exceeded.t-state-selected,
 html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.exceeded.t-state-hover,
 html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.exceeded.t-state-hover {
-  background-color: #7dc004 !important;
+  background-color: #eeffe8 !important;
 }
 html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.public-holiday,
 html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.public-holiday,
