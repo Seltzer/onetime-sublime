@@ -109,29 +109,67 @@
 			});
 		};
 	}
-
+	
 
 	/**
 	 * Days are marked as being incomplete if their week is incomplete and they don't satisfy the daily quota.
 	 * Future days are optionally included.
 	 */
-	function enableIncompleteDayHighlighting($calendar, calendar, $weekGrid, includeFutureDays) {
+	function enableIncompleteDayHighlighting($calendar, calendar, $weekGrid, weekGrid, includeFutureDays) {
 		$calendar.bind('navigate', highlightIncompleteDays);
 		$weekGrid.bind('dataBound', highlightIncompleteDays);
+
 		highlightIncompleteDays();
 
-
+		
 		function highlightIncompleteDays() {
+			// This is deliberately recomputed every time this is called, to ensure accuracy for people who
+			// leave OT open over multiple days.
+			var tomorrow = ots.core.dates.zeroDate(ots.core.dates.addDays(ots.core.dates.getDateNow(), 1));
+			
+			highlightWeekGrid(tomorrow);
+			highlightCalendar(tomorrow);
+		}
+
+
+		function highlightWeekGrid(tomorrowDate) {
+			var weekGridDate = weekGrid.data[0].weekDateTime;
+
+			// Fetch timesheets corresponding to above week
+			ots.core.oneTime.getWeeksOfTimesheets(weekGridDate, weekGridDate)
+				.done(function(weeksOfTimesheets) {
+					var daysOfTimesheets = weeksOfTimesheets[0].days,
+						$dayRows = $weekGrid.find(weekGridDayRowSelector);
+
+					_.chain(daysOfTimesheets)
+						.zip($dayRows)
+						.map(function(x) {
+							return {
+								day: x[0],
+								$tr: $(x[1])
+							};
+						})
+						.filter(function(x) {
+							return includeFutureDays || x.day.date < tomorrowDate;
+						})
+						.each(function(x) {
+							annotate(x.$tr, x.day.completeness);
+						});
+				});
+		}
+
+		
+		function highlightCalendar(tomorrowDate) {
 			if (!ots.core.oneTime.calendarIsInStandardMode(calendar))
 				return;
 
 			// Fetch a representation of the weeks currently displayed in the calendar. We'll be working with these
 			var weeksInCalendar = ots.core.oneTime.getWeeksInDisplayedCalendar($calendar, calendar),
 				firstWeek = _.first(weeksInCalendar)[0].date,
-				lastWeek = _.last(weeksInCalendar)[0].date,
-				tomorrow = ots.core.dates.zeroDate(ots.core.dates.addDays(ots.core.dates.getDateNow(), 1));
+				lastWeek = _.last(weeksInCalendar)[0].date;
 
-			// Fetch timesheets correspond to above weeks
+
+			// Fetch timesheets corresponding to above weeks
 			ots.core.oneTime.getWeeksOfTimesheets(firstWeek, lastWeek)
 				.done(function(weeksOfTimesheets) {
 					// Zip weeks in calendar against weeks of timesheets and process each individually
@@ -139,15 +177,14 @@
 						.zip(weeksOfTimesheets)
 						.map(function(week) {
 							return {
-								weekOfTimesheets: week[1],
-								$dayTds: _.map(week[0], '$td')
+								$dayTds: _.map(week[0], '$td'),
+								weekOfTimesheets: week[1]
 							};
 						})
-						.each(processWeek);
+						.each(processWeekAndUpdateCalendar);
 				});
 
-
-			function processWeek(week) {
+			function processWeekAndUpdateCalendar(week) {
 				_.chain(week.$dayTds)
 					.zip(week.weekOfTimesheets.days)
 					.map(function(day) {
@@ -158,17 +195,22 @@
 						};
 					})
 					.filter(function(day) {
-						return includeFutureDays || day.date < tomorrow;
+						return includeFutureDays || day.date < tomorrowDate;
 					})
 					.each(function(day) {
-						day.$td
-							.toggleClass('blank', day.completeness === ots.core.TimesheetCompleteness.Blank)
-							.toggleClass('partially-complete', day.completeness === ots.core.TimesheetCompleteness.PartiallyComplete)
-							.toggleClass('complete', day.completeness === ots.core.TimesheetCompleteness.Complete)
-							.toggleClass('exceeded', day.completeness === ots.core.TimesheetCompleteness.Exceeded)
+						annotate(day.$td, day.completeness);
 					})
 					.value();
 			}
+		}
+
+
+		function annotate($elt, completeness) {
+			$elt
+				.toggleClass('blank', completeness === ots.core.TimesheetCompleteness.Blank)
+				.toggleClass('partially-complete', completeness === ots.core.TimesheetCompleteness.PartiallyComplete)
+				.toggleClass('complete', completeness === ots.core.TimesheetCompleteness.Complete)
+				.toggleClass('exceeded', completeness === ots.core.TimesheetCompleteness.Exceeded)
 		}
 	}
 
@@ -496,7 +538,7 @@
 			fixCalendarClasses($cal, $weekGrid);
 
 			if (config.enableIncompleteDayHighlighting)
-				enableIncompleteDayHighlighting($cal, cal, $weekGrid, config.includeFutureDays);
+				enableIncompleteDayHighlighting($cal, cal, $weekGrid, weekGrid, config.includeFutureDays);
 
 			if (config.enableTodayHighlighting)
 				enableTodayHighlighting($cal, cal, $weekGrid);

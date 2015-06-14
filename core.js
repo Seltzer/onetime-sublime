@@ -310,9 +310,12 @@ ots.core.oneTime = (function() {
 			// When all calls resolve...				 
 			return $.when.apply($, deferredResults)
 				.pipe(function () {
+					// Required to deal with an annoying inconsistency of $.when, where it flattens its result when there's only one.
+					var results = deferredResults.length > 1 ? arguments : [arguments];
+						
 					// Aggregate and flatten timesheets received from n calls, then group them by a real JS date, not the stringly typed
 					// date we received from the API
-					var timesheets = _.chain(arguments)
+					var timesheets = _.chain(results)
 						.map(function (result) { return result[0].data; })
 						.flatten()
 						.groupBy(function(entry) {
