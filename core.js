@@ -280,7 +280,7 @@ ots.core.oneTime = (function() {
 		/**
 		 * Fetches timesheets between the specified dates in units of weeks
 		 *
-		 * @return Array of week objects (see below for structure)
+		 * @return Array of week objects (see below for structure, TODO: Type needed)
 		 */
 		getWeeksOfTimesheets: function(start, end) {
 			// Prepare
@@ -342,7 +342,10 @@ ots.core.oneTime = (function() {
 										return {
 											date: x[0],
 											hours: x[1],
-											completeness: ots.core.computeDayCompleteness(x[0], x[1], weekIsComplete)
+											completeness: ots.core.computeDayCompleteness(x[0], x[1], weekIsComplete),
+											isPublicHoliday: _.some((timesheets[x[0]] || []), function(ts) {
+												return ts.TimecodeDesc === 'Public Holidays';
+											})
 										};
 									})
 									.value()

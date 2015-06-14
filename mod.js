@@ -153,7 +153,7 @@
 							return includeFutureDays || x.day.date < tomorrowDate;
 						})
 						.each(function(x) {
-							annotate(x.$tr, x.day.completeness);
+							annotate(x.$tr, x.day);
 						});
 				});
 		}
@@ -187,30 +187,31 @@
 			function processWeekAndUpdateCalendar(week) {
 				_.chain(week.$dayTds)
 					.zip(week.weekOfTimesheets.days)
-					.map(function(day) {
+					.map(function(x) {
 						return {
-							date: day[1].date,
-							completeness: day[1].completeness,
-							$td: day[0]
+							$td: x[0],
+							day: x[1]
 						};
 					})
-					.filter(function(day) {
-						return includeFutureDays || day.date < tomorrowDate;
+					.filter(function(x) {
+						return includeFutureDays || x.day.date < tomorrowDate;
 					})
-					.each(function(day) {
-						annotate(day.$td, day.completeness);
+					.each(function(x) {
+						annotate(x.$td, x.day);
 					})
 					.value();
 			}
 		}
 
 
-		function annotate($elt, completeness) {
+		function annotate($elt, day) {
 			$elt
-				.toggleClass('blank', completeness === ots.core.TimesheetCompleteness.Blank)
-				.toggleClass('partially-complete', completeness === ots.core.TimesheetCompleteness.PartiallyComplete)
-				.toggleClass('complete', completeness === ots.core.TimesheetCompleteness.Complete)
-				.toggleClass('exceeded', completeness === ots.core.TimesheetCompleteness.Exceeded)
+				.toggleClass('blank', !day.isPublicHoliday && day.completeness === ots.core.TimesheetCompleteness.Blank)
+				.toggleClass('partially-complete',
+					!day.isPublicHoliday && day.completeness === ots.core.TimesheetCompleteness.PartiallyComplete)
+				.toggleClass('complete', !day.isPublicHoliday && day.completeness === ots.core.TimesheetCompleteness.Complete)
+				.toggleClass('exceeded', !day.isPublicHoliday && day.completeness === ots.core.TimesheetCompleteness.Exceeded)
+				.toggleClass('public-holiday', day.isPublicHoliday);
 		}
 	}
 
@@ -272,7 +273,9 @@
 					'<h3>Bugfixes</h3>' + 
 					'<ul>' + 
 						'{{= listItemsTemplate(bugfixes) }}' + 
-					'</ul>' + 
+					'</ul>' +
+
+					'<a href="https://github.com/Seltzer/onetime-sublime/blob/master/CHANGELOG.md" target="_blank">Full changelog</a>' +
 
 					'<div class="dismiss">' +
 						'<a href="javascript:void(0)">Dismiss</a>' +
