@@ -48,27 +48,6 @@
 		}
 	}
 
-	
-	function enableTodayHighlighting($calendar, calendar, $weekGrid) {
-		$calendar.bind('navigate change', highlightToday);
-		$weekGrid.bind('dataBound', highlightToday);
-
-		highlightToday();
-
-
-		function highlightToday() {
-			if (!ots.core.oneTime.calendarIsInStandardMode(calendar))
-				return;
-
-			var today = ots.core.oneTime.getDayInDisplayedCalendar($calendar, calendar, ots.core.dates.getDateNow());
-
-			$calendar.find('.t-content tbody tr td.today').not(today ? today.$td : []).removeClass('today');
-
-			if (today)
-				today.$td.addClass('today');								
-		}
-	}
-
 
 	function enableFavouritesFiltering($favTab) {
 		var $li = $('<li class="favourites-filter"></li>')
@@ -216,21 +195,6 @@
 	}
 
 
-	/**
-	 * Our CSS relies on public holidays being addressable. Hence this.
-	 */
-	function fixCalendarClasses($calendar, $weekGrid) {
-		$calendar.bind('change navigate', fix);
-		$weekGrid.bind('dataBound', fix);
-		fix();
-
-
-		function fix() {
-			$calendar.find('table tbody tr td > a.t-action-link').each(function() { $(this).parent().addClass('public-holiday'); });
-		}
-	}
-
-
 	function addHeader(optionsUrl) {
 		var $titleContainer = $('#titleContainer');
 
@@ -361,7 +325,6 @@
 		var $html = $('html');
 		
 		$html.attr({
-			'data-today-highlighting-enabled': otsConfig.enableTodayHighlighting,
 			'data-incomplete-day-highlighting-enabled': otsConfig.enableIncompleteDayHighlighting
 		});
 	}
@@ -512,7 +475,6 @@
 		};
 
 		addHeader(config.optionsUrl);
-		ots.core.analytics.initialise();
 
 		// Obtain DOM elements and Telerik components on page
 		var $cal = $('#cal'),
@@ -531,21 +493,11 @@
 
 
 		// Activate features based on config
-
 		if (config.enableFavouritesFiltering)
 			enableFavouritesFiltering($favTab);
 
-		if (config.enableIncompleteDayHighlighting || config.enableTodayHighlighting) {
-			// If we're doing any sort of day highlighting, we need to fix the classes on the calendar so that
-			// public holidays are marked.
-			fixCalendarClasses($cal, $weekGrid);
-
-			if (config.enableIncompleteDayHighlighting)
-				enableIncompleteDayHighlighting($cal, cal, $weekGrid, weekGrid, config.includeFutureDays);
-
-			if (config.enableTodayHighlighting)
-				enableTodayHighlighting($cal, cal, $weekGrid);
-		}
+		if (config.enableIncompleteDayHighlighting) 
+			enableIncompleteDayHighlighting($cal, cal, $weekGrid, weekGrid, config.includeFutureDays);
 
 		if (config.enableWeekGridClicking)
 			enableWeekGridClicking($cal, cal, $weekGrid, weekGrid, config.allowMonthChange);

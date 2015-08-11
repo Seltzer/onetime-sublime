@@ -164,8 +164,7 @@
 
 
 /*=================================================================================================
- | Calendar styling (should only have effect when one or both of Today Highlighting and Incomplete 
- | Day Highlighting are enabled.
+ | Calendar styling (applies when Incomplete Day Highlighting is enabled).
 ==================================================================================================*/
 @light-blue: #A9DCF5;
 @public-holiday: #FFC455;
@@ -177,7 +176,6 @@
 	box-shadow: inset 0 0 0 2px @colour;
 }
 
-html[data-today-highlighting-enabled="true"],
 html[data-incomplete-day-highlighting-enabled="true"] {
 	#cal table > tbody > tr > td {
 		/* Today */

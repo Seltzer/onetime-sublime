@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		findIncompleteCb = document.getElementById('find-incomplete-cb'),
 		incompleteDayHighlightingCb = document.getElementById('incomplete-day-highlighting-cb'),
 		includeFutureDaysCb = document.getElementById('include-future-days-cb'),
-		todayHighlightingCb = document.getElementById('today-highlighting-cb'),
 		textWrappingCb = document.getElementById('text-wrapping-cb'),
 		debugModeCb = document.getElementById('debug-mode-cb'),
 		refreshPrompt = document.getElementById('refresh-prompt');
@@ -37,7 +36,6 @@ document.addEventListener('DOMContentLoaded', function() {
 			initCheckbox(findIncompleteCb, config.enableFindIncompleteButton, true);
 			initCheckbox(incompleteDayHighlightingCb, config.enableIncompleteDayHighlighting, true);
 			initCheckbox(includeFutureDaysCb, config.includeFutureDays, false);			
-			initCheckbox(todayHighlightingCb, config.enableTodayHighlighting, true);
 			initCheckbox(textWrappingCb, config.enableTableTextWrapping, false);
 			initCheckbox(debugModeCb, config.enableDebugMode, false);
 		});
@@ -64,7 +62,6 @@ document.addEventListener('DOMContentLoaded', function() {
 			enableFindIncompleteButton: getActualValue(findIncompleteCb),
 			enableIncompleteDayHighlighting: getActualValue(incompleteDayHighlightingCb),
 			includeFutureDays: getActualValue(includeFutureDaysCb),
-			enableTodayHighlighting: getActualValue(todayHighlightingCb),
 			enableTableTextWrapping: getActualValue(textWrappingCb),
 			enableDebugMode: getActualValue(debugModeCb)
 			

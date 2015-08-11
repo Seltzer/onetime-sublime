@@ -6,7 +6,7 @@
 		config.optionsUrl = chrome.extension.getURL('options/options.html');
 
 		var configDiv = document.createElement('div');
-		configDiv.id = "ots-config";
+		configDiv.id = 'ots-config';
 		configDiv.setAttribute('data-ots-config', JSON.stringify(config));
 		document.body.appendChild(configDiv);
 
@@ -31,7 +31,6 @@
 		apply('enableFindIncompleteButton', true);
 		apply('enableIncompleteDayHighlighting', true);
 		apply('includeFutureDays', false);
-		apply('enableTodayHighlighting', true);
 		apply('enableTableTextWrapping', false);
 		apply('enableDebugMode', false); 
 
