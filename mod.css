@@ -120,6 +120,7 @@ html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > 
   /* Current day */
   /* Current week / day */
   /* NB: calendarWeekRow is inconsistently used to indicate the current week. Sometimes t-state-selected exists without calendarWeekRow */
+  /* Disable 'page flip' glyph */
   /* Hover state */
   /* Blank days */
   /* Partially complete days */
@@ -127,11 +128,21 @@ html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > 
   /* Public holidays */
 }
 html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.today,
+html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.today {
+  /* Disable green border */
+}
+html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.today,
 html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.today,
 html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.today.t-state-hover.t-other-month,
 html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.today.t-state-hover.t-other-month {
   font-weight: bold;
   font-size: 15px;
+  /* Disable positioning override OT applies to accommodate green border (which we disable below) */
+  position: static;
+}
+html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.today > a,
+html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.today > a {
+  box-shadow: none;
 }
 html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.t-state-selected,
 html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.t-state-selected {
@@ -141,6 +152,7 @@ html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.t-stat
 html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.t-state-selected,
 html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.t-state-selected.today,
 html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.t-state-selected.today {
+  border: none !important;
   /* Preferring this to border because it doesn't occupy space */
   -webkit-box-shadow: inset 0 0 0 2px #a9dcf5;
   box-shadow: inset 0 0 0 2px #a9dcf5;
@@ -149,8 +161,24 @@ html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.calend
 html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.calendarWeekRow,
 html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.t-state-selected,
 html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.t-state-selected {
-  /* Remove current week/day highlighting. It seems unnecessary and gets in the way of incomplete day highlighting */
+  /* Reset current week/day highlighting for M-F to be white, so that it doesn't become blue when selected. */
+  /* Ditto for S-S, except here we reset to grey */
+}
+html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.calendarWeekRow:nth-child(-n+5),
+html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.calendarWeekRow:nth-child(-n+5),
+html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.t-state-selected:nth-child(-n+5),
+html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.t-state-selected:nth-child(-n+5) {
   background-color: white !important;
+}
+html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.calendarWeekRow:nth-child(n+6),
+html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.calendarWeekRow:nth-child(n+6),
+html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.t-state-selected:nth-child(n+6),
+html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.t-state-selected:nth-child(n+6) {
+  background-color: #ededed !important;
+}
+html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td > a.t-link::after,
+html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td > a.t-link::after {
+  content: none;
 }
 html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.t-state-hover,
 html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.t-state-hover {
@@ -160,12 +188,6 @@ html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > 
   /* Preferring this to border because it doesn't occupy space */
   -webkit-box-shadow: inset 0 0 0 2px #a9dcf5;
   box-shadow: inset 0 0 0 2px #a9dcf5;
-  /* But disable when hovering over days of other months */
-}
-html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.t-state-hover.t-other-month,
-html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.t-state-hover.t-other-month {
-  -webkit-box-shadow: none;
-  box-shadow: none;
 }
 html[data-today-highlighting-enabled="true"] #cal table > tbody > tr > td.blank,
 html[data-incomplete-day-highlighting-enabled="true"] #cal table > tbody > tr > td.blank,

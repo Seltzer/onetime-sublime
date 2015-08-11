@@ -171,6 +171,7 @@
 @public-holiday: #FFC455;
 
 .ots-border(@colour) {
+	border: none !important;
 	/* Preferring this to border because it doesn't occupy space */
 	-webkit-box-shadow: inset 0 0 0 2px @colour;
 	box-shadow: inset 0 0 0 2px @colour;
@@ -185,6 +186,13 @@ html[data-incomplete-day-highlighting-enabled="true"] {
 			&.t-state-hover.t-other-month {
 				font-weight: bold;
 				font-size: 15px;
+				/* Disable positioning override OT applies to accommodate green border (which we disable below) */
+				position: static;
+			}
+
+			/* Disable green border */
+			> a {
+				box-shadow: none;
 			}
 		}
 
@@ -202,22 +210,28 @@ html[data-incomplete-day-highlighting-enabled="true"] {
 		/* NB: calendarWeekRow is inconsistently used to indicate the current week. Sometimes t-state-selected exists without calendarWeekRow */ 
 		&.calendarWeekRow,
 		&.t-state-selected {
-			/* Remove current week/day highlighting. It seems unnecessary and gets in the way of incomplete day highlighting */
-			background-color: white !important;
+			/* Reset current week/day highlighting for M-F to be white, so that it doesn't become blue when selected. */
+			&:nth-child(-n+5) {
+				background-color: white !important;
+			}
+
+			/* Ditto for S-S, except here we reset to grey */
+			&:nth-child(n+6) {
+				background-color: hsl(0, 0%, 93%) !important;
+			}
+		}
+
+		/* Disable 'page flip' glyph */
+		> a.t-link::after {
+			content: none;
 		}
 
 		/* Hover state */
 		&.t-state-hover {
 			/* OneTime applies a blue background when hovering over days. Let's remove it and add a blue border instead. */
 			background-color: white !important;
-			border: none !important;
-			.ots-border (@light-blue);
 
-			/* But disable when hovering over days of other months */
-			&.t-other-month {
-				-webkit-box-shadow: none;
-				box-shadow: none;
-			}
+			.ots-border (@light-blue);
 		}
 
 		/* Blank days */
