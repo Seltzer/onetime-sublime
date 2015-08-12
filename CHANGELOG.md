@@ -1,5 +1,8 @@
 ## Changelog
 
+- **v3.0 (12/8/15)**
+    * Added / modified / removed many features to accommodate the new major release of OneTime.
+    
 - **v2.9 (15/6/15)**
     * Improved incomplete day highlighting and 'today' highlighting. Partially complete days and over-saturated days are now highlighted differently to blank / complete days respectively. Week grid is now highlighted. Today is now highlighted using large font, rather than a green rectangle.
     

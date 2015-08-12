@@ -3,11 +3,13 @@
 
 
 	function improveWeekGridAppearance($calendar, calendar, $weekGrid, weekGrid) {
-		$calendar.bind('navigate', updateWeekGridClickability);
-		$weekGrid.bind('dataBound', updateWeekGridClickability);
-		updateWeekGridClickability();
+		$calendar.bind('navigate ots-cal-change', updateWeekGrid);
+		$weekGrid.bind('dataBound', updateWeekGrid);
 
-		function updateWeekGridClickability() {
+		updateWeekGrid();
+
+
+		function updateWeekGrid() {
 			var calendarMonth = calendar.viewedMonth.month();
 
 			$weekGrid.find(weekGridDayRowSelector).each(function() {
@@ -19,7 +21,7 @@
 				// being ready. At this stage, we'll simply skip this day - a subsequent invocation will sort it out.
 				// TODO: Better fix for this.
 				if (!dayDatum)
-					return true;				
+					return true;
 
 				var boundDateTime = dayDatum.weekDateTime;
 
@@ -48,19 +50,19 @@
 
 			// Ensure that FF is only displayed for the appropriate tabs			
 			$li.toggle(ots.core.containsSubstring(tabText, 'personal') || ots.core.containsSubstring(tabText, 'team'));
-			
+
 			// Blank out search box and re-run filter which will make all rows visible
 			$searchBox.val('');
 			runFilter();
 		});
 
 
-		// --- Helper functions --- 
+		// --- Helper functions ---
 
 		function rowsOfCurrentTab() {
 			return $favTab.find('.t-content.t-state-active .t-grid-content table tbody tr');
 		}
-		
+
 		function runFilter() {
 			var text = $searchBox.val().trim();
 
@@ -70,30 +72,34 @@
 			});
 		};
 	}
-	
+
 
 	/**
 	 * Days are marked as being incomplete if their week is incomplete and they don't satisfy the daily quota.
 	 * Future days are optionally included.
 	 */
 	function enableIncompleteDayHighlighting($calendar, calendar, $weekGrid, weekGrid, includeFutureDays) {
-		$calendar.bind('navigate', highlightIncompleteDays);
+		$calendar.bind('navigate ots-cal-change', highlightIncompleteDays);
 		$weekGrid.bind('dataBound', highlightIncompleteDays);
 
 		highlightIncompleteDays();
 
-		
+
 		function highlightIncompleteDays() {
 			// This is deliberately recomputed every time this is called, to ensure accuracy for people who
 			// leave OT open over multiple days.
 			var tomorrow = ots.core.dates.zeroDate(ots.core.dates.addDays(ots.core.dates.getDateNow(), 1));
-			
+
 			highlightWeekGrid(tomorrow);
 			highlightCalendar(tomorrow);
 		}
 
 
 		function highlightWeekGrid(tomorrowDate) {
+			// HACK!
+			if (!weekGrid.data || !weekGrid.data.length)
+				return;
+			
 			var weekGridDate = weekGrid.data[0].weekDateTime;
 
 			// Fetch timesheets corresponding to above week
@@ -119,7 +125,7 @@
 				});
 		}
 
-		
+
 		function highlightCalendar(tomorrowDate) {
 			if (!ots.core.oneTime.calendarIsInStandardMode(calendar))
 				return;
@@ -192,33 +198,33 @@
 		$titleContainer.find('#helpFileBtn, ul.t-widget > li').width(97);
 
 		// Build HTML for What's New dialog
-		var 
+		var
 			listItemsTemplate = _.template(
-				'{{ _.each(data, function (item) { }}' + 
+				'{{ _.each(data, function (item) { }}' +
 					'<li {{ if (item.explanation) { }} class="no-bullet" {{ } }}>' +
-						'{{ if (item.explanation) { }}' + 
-							'<details>' + 
+						'{{ if (item.explanation) { }}' +
+							'<details>' +
 								'<summary> {{= item.description }}</summary>' +
 								'{{= item.explanation }}' +
 							'</details>' +
 						'{{ } else { }}' +
-							'{{= item.description }}' + 
+							'{{= item.description }}' +
 						'{{ } }}' +
-					'</li>' + 
+					'</li>' +
 				'{{ }) }}', { variable: 'data' }),
 
 			whatsNewTemplate = _.template(
-				'<div class="whats-new-dialog">' + 
-					'<h2>What\'s new in v2?</h2>' + 
+				'<div class="whats-new-dialog">' +
+					'<h2>What\'s new?</h2>' +
 
-					'<h3>Enhancements</h3>' + 
-					'<ul>' + 
-						'{{= listItemsTemplate(enhancements) }}' + 
-					'</ul>' + 
+					'<h3>Enhancements</h3>' +
+					'<ul>' +
+						'{{= listItemsTemplate(enhancements) }}' +
+					'</ul>' +
 
 					'<h3>Bugfixes</h3>' + 
 					'<ul>' + 
-						'{{= listItemsTemplate(bugfixes) }}' + 
+						'{{= listItemsTemplate(bugfixes) }}' +
 					'</ul>' +
 
 					'<a href="https://github.com/Seltzer/onetime-sublime/blob/master/CHANGELOG.md" target="_blank">Full changelog</a>' +
@@ -231,20 +237,24 @@
 
 			whatsNewHtml = whatsNewTemplate({
 				enhancements: [
-					{ 
+					{
+						description: 'Added / modified / removed many features across the board.',
+						explanation: 'Required, in order to accommodate the new major release of OneTime which assimilates various OTS features.'
+					},
+					{
 						description: 'Added \'Find incomplete day\' button.',
 						explanation: 'Allows you to cycle through incomplete days from the past few months and ' +
 							'(optionally) from the upcoming month.'
 					},
-					{ 
+					{
 						description: 'Added option to allow week grid clicking to trigger a month change.',
 						explanation: 'Enabled by default.'
 					},
-					{ 
+					{
 						description: 'Added option to allow text to wrap in tables.',
 						explanation: 'Disabled by default.'
 					},
-					{ 
+					{
 						description: 'Improved incomplete day highlighting and Today higlighting.',
 						explanation: 'Partially complete days and over-saturated days are now highlighted differently to blank / complete days respectively. Week grid is now highlighted. Today is now highlighted using large font, rather than a green rectangle.'
 					}
@@ -270,13 +280,13 @@
 
 
 		// Add OTS header
-		$('<span id="ots-header">' + 
-			'<span id="modded-with">Modded with </span>OneTime Sublime v2.9 ' +
-			'<span class="links">' + 
+		$('<span id="ots-header">' +
+			'<span id="modded-with">Modded with </span>OneTime Sublime v3.0 ' +
+			'<span class="links">' +
 				'( <a href="' + optionsUrl + '" target="_blank">options</a> / ' + 
 				'<a href="https://github.com/Seltzer/onetime-sublime" target="_blank">docs</a> / ' + 
 				'<a href="javascript:void(0);" class="whats-new">what\'s new</a> )' + 
-			'</span>' + 
+			'</span>' +
 		  '</span>')
 			.appendTo($titleContainer)
 			.find('.whats-new')
@@ -305,7 +315,7 @@
 	 */
 	function writeConfigToDom(otsConfig) {
 		var $html = $('html');
-		
+
 		$html.attr({
 			'data-incomplete-day-highlighting-enabled': otsConfig.enableIncompleteDayHighlighting
 		});
@@ -370,13 +380,13 @@
 		$('<button id="find-incomplete-day" class="button">Find incomplete day</button>')
 			.insertAfter($('#today'))
 			.click(function() {
-				if (++numClicks < 3 || numClicks % 10 === 0) 
+				if (++numClicks < 3 || numClicks % 10 === 0)
 					ots.core.analytics.record('find-incomplete', { n: numClicks });
 
 				if (incompleteDays === null) {
 					getIncompleteDaysAndSetPointer()
 						.done(function() {
-							if (incompleteDays.length) 
+							if (incompleteDays.length)
 								selectDayAndIncrementPointer();
 						});
 				} else if (incompleteDays.length) {
@@ -386,7 +396,7 @@
 
 
 		function getIncompleteDaysAndSetPointer() {
-			var	
+			var
 				today = ots.core.dates.zeroDate(ots.core.dates.getDateNow()),
 				start = ots.core.dates.addMonths(today, -3),
 				end = includeFutureDays ? ots.core.dates.addMonths(today, 1) : today,
@@ -409,7 +419,7 @@
 					//    2.) Employees who go on leave for longer than three months will have a similar issue.
 					//    3.) A contiguous incomplete cluster at the start of three months will be a blind spot.
 					var firstNonEmptyDay = _.findIndex(daysInPeriod, function (day) { return day.hours > 0; });
-					if (firstNonEmptyDay !== -1) 
+					if (firstNonEmptyDay !== -1)
 						daysInPeriod = _.rest(daysInPeriod, firstNonEmptyDay);
 
 					incompleteDays = _.filter(daysInPeriod, function(day) {
@@ -427,9 +437,9 @@
 							dateAtIndex = incompleteDays[matchingIndex].date;
 
 							return $.Deferred().resolve();
-						} 
+						}
 					}
-					
+
 					index = 0;
 					dateAtIndex = incompleteDays.length ? incompleteDays[index].date : null;
 
@@ -437,7 +447,7 @@
 				});
 		}
 
-		
+
 		function selectDayAndIncrementPointer() {
 			ots.core.oneTime.selectDayInCalendar($calendar, calendar, incompleteDays[index].date, true);
 			index = (index + 1) % incompleteDays.length;
@@ -473,12 +483,20 @@
 		// Disable calendar animation. It looks nicer and saves us from trying to detect when it has finished.
 		cal.stopAnimation = true;
 
+		// In the current version of OT, many events we previously relied on seem to no longer propagate.
+		// So we'll proxy the OT HighlightIncompleteDaysForCal function and add our own hooks.
+		var old = window.HighlightIncompleteDaysForCal;
+		window.HighlightIncompleteDaysForCal = function() {
+			old();
+			// Fire event which we can use above
+			$cal.trigger('ots-cal-change');
+		};
 
 		// Activate features based on config
 		if (config.enableFavouritesFiltering)
 			enableFavouritesFiltering($favTab);
 
-		if (config.enableIncompleteDayHighlighting) 
+		if (config.enableIncompleteDayHighlighting)
 			enableIncompleteDayHighlighting($cal, cal, $weekGrid, weekGrid, config.includeFutureDays);
 
 		if (config.enableTableTextWrapping)
