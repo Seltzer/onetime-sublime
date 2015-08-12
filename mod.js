@@ -1,28 +1,12 @@
 (function($) {
 	var weekGridDayRowSelector = 'table:eq(1) > tbody > tr';
 
-	
-	/**
-	 * The weekday clicking feature is intended to emulate the OneTime calendar clicking functionality in that:
-	 *   - Clicking on a day will never result in the month changing (unless enabled via options)
-	 *   - Non-clickable days (those outside the displayed month) are displayed in grey.
-	 *   - Clicking a weekday should trigger an update to various OneTime panes as if it were a calendar click
-	 */
-	function enableWeekGridClicking($calendar, calendar, $weekGrid, weekGrid, allowMonthChange) {
+
+	function improveWeekGridAppearance($calendar, calendar, $weekGrid, weekGrid) {
 		$calendar.bind('navigate', updateWeekGridClickability);
 		$weekGrid.bind('dataBound', updateWeekGridClickability);
 		updateWeekGridClickability();
 
-
-		$weekGrid.delegate(weekGridDayRowSelector, 'click', function() {
-			var $tr = $(this),
-				date = $tr.data('date');
-
-			if ($tr.hasClass('clickable')) 
-				ots.core.oneTime.selectDayInCalendar($calendar, calendar, date, allowMonthChange);
-		});
-
-		
 		function updateWeekGridClickability() {
 			var calendarMonth = calendar.viewedMonth.month();
 
@@ -39,11 +23,9 @@
 
 				var boundDateTime = dayDatum.weekDateTime;
 
-				$tr.data('date', boundDateTime);
-				
-				var makeClickable = allowMonthChange || boundDateTime.getMonth() === calendarMonth;
-				$tr.toggleClass('clickable', makeClickable);
-				$tr.toggleClass('non-clickable', !makeClickable);
+				$tr
+					.data('date', boundDateTime)
+					.toggleClass('another-month', boundDateTime.getMonth() !== calendarMonth);
 			});
 		}
 	}
@@ -499,14 +481,13 @@
 		if (config.enableIncompleteDayHighlighting) 
 			enableIncompleteDayHighlighting($cal, cal, $weekGrid, weekGrid, config.includeFutureDays);
 
-		if (config.enableWeekGridClicking)
-			enableWeekGridClicking($cal, cal, $weekGrid, weekGrid, config.allowMonthChange);
-
 		if (config.enableTableTextWrapping)
 			enableTableTextWrapping($favTab, $timesheetGrid);
 
 		if (config.enableFindIncompleteButton)
 			enableFindIncompleteDay($cal, cal, config.includeFutureDays);
+
+		improveWeekGridAppearance($cal, cal, $weekGrid, weekGrid);
 	});
 
 }(jQuery));

@@ -1,8 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
 	var
 		favsFilteringCb = document.getElementById('favs-filtering-cb'),
-		weekGridClickingCb = document.getElementById('week-grid-clicking-cb'),
-		allowMonthChangeCb = document.getElementById('allow-month-change-cb'),
 		findIncompleteCb = document.getElementById('find-incomplete-cb'),
 		incompleteDayHighlightingCb = document.getElementById('incomplete-day-highlighting-cb'),
 		includeFutureDaysCb = document.getElementById('include-future-days-cb'),
@@ -31,8 +29,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		chrome.storage.sync.get(null, function (config) {
 			// TODO: The config defaulting below is duplicated elsewhere. Annoying.
 			initCheckbox(favsFilteringCb, config.enableFavouritesFiltering, true);
-			initCheckbox(weekGridClickingCb, config.enableWeekGridClicking, true);
-			initCheckbox(allowMonthChangeCb, config.allowMonthChange, false);
 			initCheckbox(findIncompleteCb, config.enableFindIncompleteButton, true);
 			initCheckbox(incompleteDayHighlightingCb, config.enableIncompleteDayHighlighting, true);
 			initCheckbox(includeFutureDaysCb, config.includeFutureDays, false);			
@@ -57,8 +53,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	function persistOptions() {
 		chrome.storage.sync.set({
 			enableFavouritesFiltering: getActualValue(favsFilteringCb),
-			enableWeekGridClicking: getActualValue(weekGridClickingCb),
-			allowMonthChange: getActualValue(allowMonthChangeCb),
 			enableFindIncompleteButton: getActualValue(findIncompleteCb),
 			enableIncompleteDayHighlighting: getActualValue(incompleteDayHighlightingCb),
 			includeFutureDays: getActualValue(includeFutureDaysCb),

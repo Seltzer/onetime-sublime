@@ -9,14 +9,14 @@
 /*=================================================================================================
  | Week grid styling - week grid clickability
 ==================================================================================================*/
-#weekgrid table > tbody > tr.clickable,
-#weekgrid table > tbody > tr.clickable * {
+#weekgrid table > tbody > tr,
+#weekgrid table > tbody > tr * {
   cursor: pointer;
 }
-#weekgrid table > tbody > tr.non-clickable > td:nth-child(-n+2) {
+#weekgrid table > tbody > tr.another-month > td:nth-child(-n+2) {
   color: gray;
 }
-#weekgrid table > tbody > tr.non-clickable > td:nth-child(n+3) {
+#weekgrid table > tbody > tr.another-month > td:nth-child(n+3) {
   color: #4D4D4D;
 }
 /*=================================================================================================

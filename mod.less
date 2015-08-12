@@ -12,16 +12,16 @@
  | Week grid styling - week grid clickability
 ==================================================================================================*/
 #weekgrid table > tbody > tr {
-	&.clickable,
-	&.clickable * {
+	&,
+	& * {
 		cursor: pointer;
 	}
 
-	&.non-clickable > td:nth-child(-n+2) {
+	&.another-month > td:nth-child(-n+2) {
 		color: gray;
 	}
 	
-	&.non-clickable > td:nth-child(n+3) {
+	&.another-month > td:nth-child(n+3) {
 		color: #4D4D4D;
 	}
 }

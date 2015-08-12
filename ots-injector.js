@@ -26,8 +26,6 @@
 	function applyDefaults(config) {
 		// TODO: These config defaults exist elsewhere (in options.js). Annoying.
 		apply('enableFavouritesFiltering', true);
-		apply('enableWeekGridClicking', true);
-		apply('allowMonthChange', false);
 		apply('enableFindIncompleteButton', true);
 		apply('enableIncompleteDayHighlighting', true);
 		apply('includeFutureDays', false);
